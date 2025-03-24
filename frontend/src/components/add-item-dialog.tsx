@@ -20,7 +20,7 @@ const categories = [
   { value: 'movies', label: 'Movies' },
   { value: 'games', label: 'Games' },
   { value: 'restaurants', label: 'Restaurants' },
-  { value: 'travel', label: 'Travel' },
+  { value: 'other', label: 'Other' },
 ];
 
 export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {

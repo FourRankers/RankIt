@@ -109,7 +109,7 @@ export default function HomePage() {
               <CategoryCard name="Movies" count={1532} icon="film" />
               <CategoryCard name="Games" count={943} icon="gamepad-2" />
               <CategoryCard name="Restaurants" count={2156} icon="utensils" />
-              <CategoryCard name="Travel" count={765} icon="plane" />
+              <CategoryCard name="Other" count={765} icon="other" />
             </div>
           </div>
         </section>

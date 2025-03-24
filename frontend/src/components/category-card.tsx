@@ -1,7 +1,7 @@
 import type React from "react"
 import Link from "next/link"
 import type { LucideIcon } from 'lucide-react'
-import { Book, Film, Gamepad2, Laptop, Plane, Utensils } from "lucide-react"
+import { Book, Film, Gamepad2, Laptop, MoreHorizontal, Utensils } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
@@ -45,8 +45,8 @@ function getIconByName(name: string): LucideIcon {
       return Gamepad2
     case "utensils":
       return Utensils
-    case "plane":
-      return Plane
+    case "other":
+      return MoreHorizontal
     default:
       return Laptop
   }
