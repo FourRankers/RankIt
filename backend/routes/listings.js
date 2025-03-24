@@ -29,5 +29,21 @@ router.post("/add-listing", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// Get all listings from Firestore
+router.get("/get-listings", async (req, res) => {
+  try {
+    const listingsSnapshot = await db.collection("listings").get();
+    const listings = listingsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    res.status(200).json(listings);
+  } catch (error) {
+    console.error("Error fetching listings:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 module.exports = router;
