@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/listings', listingsRouter);
+app.use('/', listingsRouter);
 
 app.listen(PORT, () => {
   console.log(`RankIt backend running at port ${PORT}`);
