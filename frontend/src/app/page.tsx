@@ -45,6 +45,19 @@ export default function HomePage() {
   //   fetchItems();
   // }, []);
 
+  // 模拟商品数据
+  const items = [
+    {
+      id: "1",
+      title: "Sony WH-1000XM4 Wireless Noise Cancelling Headphones",
+      category: "Electronics",
+      rating: 4.8,
+      reviewCount: 1243,
+      image: "/default.jpg"
+    },
+    // ... other items
+  ]
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="sticky top-0 z-10 bg-background border-b">
@@ -98,70 +111,11 @@ export default function HomePage() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold tracking-tight">Popular Items</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              <ItemCard
-                id="1"
-                title="Sony WH-1000XM4 Headphones"
-                category="Electronics"
-                rating={4.8}
-                reviewCount={1243}
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <ItemCard
-                id="2"
-                title="The Midnight Library"
-                category="Books"
-                rating={4.5}
-                reviewCount={876}
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <ItemCard
-                id="3"
-                title="Dune (2021)"
-                category="Movies"
-                rating={4.7}
-                reviewCount={1532}
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <ItemCard
-                id="4"
-                title="Elden Ring"
-                category="Games"
-                rating={4.9}
-                reviewCount={943}
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <ItemCard
-                id="5"
-                title="Nobu Restaurant"
-                category="Restaurants"
-                rating={4.6}
-                reviewCount={756}
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <ItemCard
-                id="6"
-                title="Bali Retreat Resort"
-                category="Travel"
-                rating={4.8}
-                reviewCount={543}
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <ItemCard
-                id="7"
-                title="MacBook Pro M2"
-                category="Electronics"
-                rating={4.7}
-                reviewCount={987}
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <ItemCard
-                id="8"
-                title="Project Hail Mary"
-                category="Books"
-                rating={4.9}
-                reviewCount={654}
-                image="/placeholder.svg?height=300&width=300"
-              />
+              {items.map(item => (
+                <div key={item.id}>
+                  <ItemCard {...item} />
+                </div>
+              ))}
             </div>
             <div className="flex justify-center">
               <Button variant="outline">Load more</Button>
