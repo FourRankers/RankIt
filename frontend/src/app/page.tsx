@@ -47,7 +47,6 @@ export default function HomePage() {
   //   fetchItems();
   // }, []);
 
-  // 模拟商品数据
   const items = [
     {
       id: "1",
@@ -57,7 +56,6 @@ export default function HomePage() {
       reviewCount: 1243,
       image: "/default.jpg"
     },
-    // ... other items
   ]
 
   return (
@@ -106,6 +104,13 @@ export default function HomePage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               <CategoryCard 
+                name="All" 
+                count={7515}
+                icon="layout-grid"
+                isSelected={selectedCategory === "All"}
+                onClick={() => setSelectedCategory("All")}
+              />
+              <CategoryCard
                 name="Electronics" 
                 count={1243} 
                 icon="laptop"
@@ -125,13 +130,6 @@ export default function HomePage() {
                 icon="film"
                 isSelected={selectedCategory === "Movies"}
                 onClick={() => setSelectedCategory("Movies")}
-              />
-              <CategoryCard 
-                name="Games" 
-                count={943} 
-                icon="gamepad-2"
-                isSelected={selectedCategory === "Games"}
-                onClick={() => setSelectedCategory("Games")}
               />
               <CategoryCard 
                 name="Restaurants" 

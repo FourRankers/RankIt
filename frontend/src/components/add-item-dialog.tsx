@@ -15,10 +15,10 @@ interface AddItemDialogProps {
 }
 
 const categories = [
+  { value: 'all', label: 'All' },
   { value: 'electronics', label: 'Electronics' },
   { value: 'books', label: 'Books' },
   { value: 'movies', label: 'Movies' },
-  { value: 'games', label: 'Games' },
   { value: 'restaurants', label: 'Restaurants' },
   { value: 'other', label: 'Other' },
 ];
