@@ -1,18 +1,49 @@
 'use client';
 
+import { useState } from 'react';
 import Link from "next/link"
 import { Search, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CategoryCard } from "@/components/category-card"
 import { ItemCard } from "@/components/item-card"
 import { AddItemDialog } from '@/components/add-item-dialog'
-import { useState } from 'react'
 
 export default function HomePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  // useEffect(() => {
+  //   const fetchItems = async () => {
+  //     try {
+  //       const response = await fetch('http://localhost:8080/add-listing', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({
+  //           title:'test-rank',
+  //           price:10000,
+  //           location:'UNSW'
+  //         }),
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+
+  //       const data = await response.json();
+  //       setItems(data);
+  //     } catch (err) {
+  //       setError(err.message);
+  //       console.error('Failed to fetch items:', err);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchItems();
+  // }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -64,165 +95,78 @@ export default function HomePage() {
         </section>
 
         <section className="py-6 max-w-7xl mx-auto px-4">
-          <Tabs defaultValue="trending" className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold tracking-tight">Explore Items</h2>
-              <TabsList>
-                <TabsTrigger value="trending">Trending</TabsTrigger>
-                <TabsTrigger value="recent">Recent</TabsTrigger>
-                <TabsTrigger value="top-rated">Top Rated</TabsTrigger>
-              </TabsList>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold tracking-tight">Popular Items</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <ItemCard
+                id="1"
+                title="Sony WH-1000XM4 Headphones"
+                category="Electronics"
+                rating={4.8}
+                reviewCount={1243}
+                image="/placeholder.svg?height=300&width=300"
+              />
+              <ItemCard
+                id="2"
+                title="The Midnight Library"
+                category="Books"
+                rating={4.5}
+                reviewCount={876}
+                image="/placeholder.svg?height=300&width=300"
+              />
+              <ItemCard
+                id="3"
+                title="Dune (2021)"
+                category="Movies"
+                rating={4.7}
+                reviewCount={1532}
+                image="/placeholder.svg?height=300&width=300"
+              />
+              <ItemCard
+                id="4"
+                title="Elden Ring"
+                category="Games"
+                rating={4.9}
+                reviewCount={943}
+                image="/placeholder.svg?height=300&width=300"
+              />
+              <ItemCard
+                id="5"
+                title="Nobu Restaurant"
+                category="Restaurants"
+                rating={4.6}
+                reviewCount={756}
+                image="/placeholder.svg?height=300&width=300"
+              />
+              <ItemCard
+                id="6"
+                title="Bali Retreat Resort"
+                category="Travel"
+                rating={4.8}
+                reviewCount={543}
+                image="/placeholder.svg?height=300&width=300"
+              />
+              <ItemCard
+                id="7"
+                title="MacBook Pro M2"
+                category="Electronics"
+                rating={4.7}
+                reviewCount={987}
+                image="/placeholder.svg?height=300&width=300"
+              />
+              <ItemCard
+                id="8"
+                title="Project Hail Mary"
+                category="Books"
+                rating={4.9}
+                reviewCount={654}
+                image="/placeholder.svg?height=300&width=300"
+              />
             </div>
-            <TabsContent value="trending" className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <ItemCard
-                  id="1"
-                  title="Sony WH-1000XM4 Headphones"
-                  category="Electronics"
-                  rating={4.8}
-                  reviewCount={1243}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="2"
-                  title="The Midnight Library"
-                  category="Books"
-                  rating={4.5}
-                  reviewCount={876}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="3"
-                  title="Dune (2021)"
-                  category="Movies"
-                  rating={4.7}
-                  reviewCount={1532}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="4"
-                  title="Elden Ring"
-                  category="Games"
-                  rating={4.9}
-                  reviewCount={943}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="5"
-                  title="Nobu Restaurant"
-                  category="Restaurants"
-                  rating={4.6}
-                  reviewCount={756}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="6"
-                  title="Bali Retreat Resort"
-                  category="Travel"
-                  rating={4.8}
-                  reviewCount={543}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="7"
-                  title="MacBook Pro M2"
-                  category="Electronics"
-                  rating={4.7}
-                  reviewCount={987}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="8"
-                  title="Project Hail Mary"
-                  category="Books"
-                  rating={4.9}
-                  reviewCount={654}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-              </div>
-              <div className="flex justify-center">
-                <Button variant="outline">Load more</Button>
-              </div>
-            </TabsContent>
-            <TabsContent value="recent" className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <ItemCard
-                  id="9"
-                  title="iPhone 15 Pro"
-                  category="Electronics"
-                  rating={4.6}
-                  reviewCount={432}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="10"
-                  title="Fourth Wing"
-                  category="Books"
-                  rating={4.3}
-                  reviewCount={321}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="11"
-                  title="Oppenheimer"
-                  category="Movies"
-                  rating={4.8}
-                  reviewCount={876}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="12"
-                  title="Baldur's Gate 3"
-                  category="Games"
-                  rating={4.9}
-                  reviewCount={765}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-              </div>
-              <div className="flex justify-center">
-                <Button variant="outline">Load more</Button>
-              </div>
-            </TabsContent>
-            <TabsContent value="top-rated" className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <ItemCard
-                  id="13"
-                  title="Bose QuietComfort Earbuds"
-                  category="Electronics"
-                  rating={5.0}
-                  reviewCount={543}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="14"
-                  title="A Court of Thorns and Roses"
-                  category="Books"
-                  rating={4.9}
-                  reviewCount={987}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="15"
-                  title="Everything Everywhere All at Once"
-                  category="Movies"
-                  rating={4.9}
-                  reviewCount={1243}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-                <ItemCard
-                  id="16"
-                  title="The Legend of Zelda: Tears of the Kingdom"
-                  category="Games"
-                  rating={5.0}
-                  reviewCount={1532}
-                  image="/placeholder.svg?height=300&width=300"
-                />
-              </div>
-              <div className="flex justify-center">
-                <Button variant="outline">Load more</Button>
-              </div>
-            </TabsContent>
-          </Tabs>
+            <div className="flex justify-center">
+              <Button variant="outline">Load more</Button>
+            </div>
+          </div>
         </section>
       </main>
       <footer className="border-t py-6 md:py-0">

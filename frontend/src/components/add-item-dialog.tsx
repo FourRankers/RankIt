@@ -40,19 +40,19 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
           <DialogTitle>Add New Item</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
+          <div className="space-y-2">
+            <label htmlFor="name" className="text-sm font-medium">
+              Name
+            </label>
+            <Input id="name" placeholder="Enter item name" required />
+          </div>
+          <div className="space-y-2">
             <label className="text-sm font-medium">Image</label>
             <ImageUpload value={image} onChange={setImage} />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Rating</label>
             <StarRating rating={rating} onRatingChange={setRating} />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-medium">
-              Name
-            </label>
-            <Input id="name" placeholder="Enter item name" required />
           </div>
           <div className="space-y-2">
             <label htmlFor="description" className="text-sm font-medium">
