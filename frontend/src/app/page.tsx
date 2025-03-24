@@ -13,6 +13,7 @@ import { AddItemDialog } from '@/components/add-item-dialog'
 
 export default function HomePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // useEffect(() => {
   //   const fetchItems = async () => {
@@ -100,16 +101,52 @@ export default function HomePage() {
             <div className="space-y-2">
               <h1 className="text-3xl font-bold tracking-tight">Discover</h1>
               <p className="text-gray-500">
-                If you don&apos;t like it, Rank It.
+                Real Opinions, Real UNSW Experience, Real Rankings
               </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              <CategoryCard name="Electronics" count={1243} icon="laptop" />
-              <CategoryCard name="Books" count={876} icon="book" />
-              <CategoryCard name="Movies" count={1532} icon="film" />
-              <CategoryCard name="Games" count={943} icon="gamepad-2" />
-              <CategoryCard name="Restaurants" count={2156} icon="utensils" />
-              <CategoryCard name="Other" count={765} icon="other" />
+              <CategoryCard 
+                name="Electronics" 
+                count={1243} 
+                icon="laptop"
+                isSelected={selectedCategory === "Electronics"}
+                onClick={() => setSelectedCategory("Electronics")}
+              />
+              <CategoryCard 
+                name="Books" 
+                count={876} 
+                icon="book"
+                isSelected={selectedCategory === "Books"}
+                onClick={() => setSelectedCategory("Books")}
+              />
+              <CategoryCard 
+                name="Movies" 
+                count={1532} 
+                icon="film"
+                isSelected={selectedCategory === "Movies"}
+                onClick={() => setSelectedCategory("Movies")}
+              />
+              <CategoryCard 
+                name="Games" 
+                count={943} 
+                icon="gamepad-2"
+                isSelected={selectedCategory === "Games"}
+                onClick={() => setSelectedCategory("Games")}
+              />
+              <CategoryCard 
+                name="Restaurants" 
+                count={2156} 
+                icon="utensils"
+                isSelected={selectedCategory === "Restaurants"}
+                onClick={() => setSelectedCategory("Restaurants")}
+              />
+              <CategoryCard 
+                name="Other" 
+                count={765} 
+                icon="other"
+                isSelected={selectedCategory === "Other"}
+                onClick={() => setSelectedCategory("Other")}
+              />
             </div>
           </div>
         </section>
