@@ -1,0 +1,35 @@
+# Node.js modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Firebase service account credentials
+serviceAccountKey.json
+
+# Uploaded images/files (local testing uploads)
+uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE config files
+.vscode/
+.idea/
+
+# Temporary files
+tmp/
+temp/
+
+# Production build files
+dist/
+build/
+
+npm package-lock (optional, uncomment if desired)
+package-lock.json
