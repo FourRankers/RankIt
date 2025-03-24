@@ -1,9 +1,8 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Star } from "lucide-react"
+"use client"
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { StarRating } from "./star-rating"
 
 interface ItemCardProps {
   id: string
@@ -14,26 +13,41 @@ interface ItemCardProps {
   image: string
 }
 
-export function ItemCard({ id, title, category, rating, reviewCount, image }: ItemCardProps) {
+export const ItemCard = ({
+  id,
+  title,
+  category,
+  rating,
+  reviewCount,
+  image,
+}: ItemCardProps) => {
+  const router = useRouter()
+
   return (
-    <Link href={`/items/${id}`}>
-      <Card className="overflow-hidden transition-all hover:shadow-md">
-        <div className="aspect-square relative">
-          <Image src={image || "/placeholder.svg"} alt={title} fill className="object-cover" />
-          <Badge className="absolute top-2 right-2">{category}</Badge>
+    <div 
+      onClick={() => router.push(`/items/${id}`)}
+      className="group block rounded-lg border p-4 transition-colors hover:bg-muted/50 cursor-pointer"
+    >
+      <div className="relative aspect-square mb-3 rounded-lg overflow-hidden">
+        <Image
+          src={image || "/default.jpg"}
+          alt={title}
+          fill
+          className="object-cover transition-transform group-hover:scale-105"
+        />
+      </div>
+      
+      <div className="space-y-2">
+        <div className="text-sm text-muted-foreground">{category}</div>
+        <div className="font-semibold line-clamp-2">{title}</div>
+        <div className="flex items-center gap-2">
+          <StarRating rating={rating} size={4} />
+          <span className="text-sm text-muted-foreground">
+            ({reviewCount})
+          </span>
         </div>
-        <CardContent className="p-4">
-          <h3 className="font-medium text-base line-clamp-1">{title}</h3>
-        </CardContent>
-        <CardFooter className="p-4 pt-0 flex items-center gap-2">
-          <div className="flex items-center">
-            <Star className="h-4 w-4 fill-primary text-primary" />
-            <span className="ml-1 text-sm font-medium">{rating.toFixed(1)}</span>
-          </div>
-          <span className="text-xs text-muted-foreground">({reviewCount} reviews)</span>
-        </CardFooter>
-      </Card>
-    </Link>
+      </div>
+    </div>
   )
 }
 
