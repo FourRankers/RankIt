@@ -11,9 +11,15 @@ const serviceAccount = {
   client_email: process.env.FIREBASE_CLIENT_EMAIL,
 };
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+try {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+  console.log("Firebase Admin SDK initialized successfully");
+} catch (error) {
+  console.error("Error initializing Firebase Admin SDK:", error);
+  throw error;
+}
 
 const db = admin.firestore();
 
