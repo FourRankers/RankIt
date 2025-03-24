@@ -1,13 +1,19 @@
+'use client';
+
 import Link from "next/link"
-import { Search } from "lucide-react"
+import { Search, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CategoryCard } from "@/components/category-card"
 import { ItemCard } from "@/components/item-card"
+import { AddItemDialog } from '@/components/add-item-dialog'
+import { useState } from 'react'
 
 export default function HomePage() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="sticky top-0 z-10 bg-background border-b">
@@ -41,9 +47,9 @@ export default function HomePage() {
         <section className="py-6 md:py-10 max-w-7xl mx-auto px-4">
           <div className="grid gap-6">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight">Discover & Review</h1>
-              <p className="text-muted-foreground">
-                Find, rate, and review your favorite items across various categories
+              <h1 className="text-3xl font-bold tracking-tight">Discover</h1>
+              <p className="text-gray-500">
+                If you don&apos;t like it, Rank It.
               </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -221,23 +227,20 @@ export default function HomePage() {
       </main>
       <footer className="border-t py-6 md:py-0">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 px-4 md:h-16">
-          <p className="text-sm text-muted-foreground">© 2025 ReviewHub. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <Link href="/about" className="text-sm text-muted-foreground hover:underline">
-              About
-            </Link>
-            <Link href="/privacy" className="text-sm text-muted-foreground hover:underline">
-              Privacy
-            </Link>
-            <Link href="/terms" className="text-sm text-muted-foreground hover:underline">
-              Terms
-            </Link>
-            <Link href="/contact" className="text-sm text-muted-foreground hover:underline">
-              Contact
-            </Link>
-          </div>
+          <p className="text-sm text-muted-foreground">© 2025 RankIt. All rights reserved.</p>
         </div>
       </footer>
+
+      <Button
+        onClick={() => setDialogOpen(true)}
+        size="icon"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg"
+      >
+        <Plus className="!h-6 !w-6" />
+        <span className="sr-only">Add Item</span>
+      </Button>
+
+      <AddItemDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   )
 }
