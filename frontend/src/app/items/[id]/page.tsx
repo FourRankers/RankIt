@@ -56,13 +56,11 @@ export default function ItemPage({ params }: { params: { id: string } }) {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Badge>{item.category}</Badge>
-              <span className="text-sm text-muted-foreground">ID: {item.id}</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold">{item.title}</h1>
             <div className="flex items-center gap-2 mt-2">
-              <StarRating rating={item.rating} />
+              <StarRating rating={item.rating} readonly={true} />
               <span className="font-medium">{item.rating.toFixed(1)}</span>
-              <span className="text-sm text-muted-foreground">({item.reviewCount} reviews)</span>
             </div>
           </div>
           <Separator />
@@ -78,13 +76,9 @@ export default function ItemPage({ params }: { params: { id: string } }) {
       <Separator className="my-8" />
 
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
           <h2 className="text-2xl font-bold">Reviews</h2>
-          <div className="flex items-center gap-2">
-            <span className="font-medium">{item.rating.toFixed(1)}</span>
-            <StarRating rating={item.rating} />
-            <span className="text-sm text-muted-foreground">({item.reviewCount} reviews)</span>
-          </div>
+          <span className="text-sm text-muted-foreground">({item.reviewCount} reviews)</span>
         </div>
 
         <div className="space-y-6">

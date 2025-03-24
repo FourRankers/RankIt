@@ -26,7 +26,7 @@ export const ItemCard = ({
   return (
     <div 
       onClick={() => router.push(`/items/${id}`)}
-      className="group block rounded-lg border p-4 transition-colors hover:bg-muted/50 cursor-pointer"
+      className="group block rounded-lg border p-4 transition-colors hover:shadow-md cursor-pointer"
     >
       <div className="relative aspect-square mb-3 rounded-lg overflow-hidden">
         <Image
