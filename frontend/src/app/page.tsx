@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from "next/link"
 import { Search, Plus } from "lucide-react"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -62,8 +63,14 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen">
       <header className="sticky top-0 z-10 bg-background border-b">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4">
-          <Link href="/" className="font-bold text-xl font-orbitron">
-            RankIt
+          <Link href="/" className="flex items-center" aria-label="RankIt Home">
+            <Image 
+              src="/logo.png" 
+              alt="RankIt Logo" 
+              width={330}
+              height={180}
+              className="h-15 w-auto"
+            />
           </Link>
           <div className="relative w-full max-w-sm mx-4">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
