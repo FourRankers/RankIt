@@ -212,15 +212,14 @@ class PostLogic {
     }
 
     // Get posts by category with pagination
-    static async getPostsByCategory(category, limit = 10, lastPostId = null) {
+    static async getPostsByCategory(category, lastPostId = null) {
         if (!category) {
             throw new Error("Category is required");
         }
 
         let query = db.collection("posts")
             .where("category", "==", category)
-            .orderBy("timestamp", "desc")
-            .limit(parseInt(limit));
+            .orderBy("timestamp", "desc");
 
         if (lastPostId) {
             const lastPost = await db.collection("posts").doc(lastPostId).get();
@@ -232,12 +231,12 @@ class PostLogic {
             id: doc.id,
             ...doc.data(),
             averageRating: doc.data().averageRating || 0,
-            totalRatings: (doc.data().commentRatings || []).length + 1 // +1 for author rating
+            totalRatings: (doc.data().commentRatings || []).length + 1
         }));
     }
 
     // Search posts by title with pagination
-    static async searchPostsByTitle(searchText, limit = 10, lastPostId = null) {
+    static async searchPostsByTitle(searchText, lastPostId = null) {
         if (!searchText) {
             throw new Error("Search text is required");
         }
@@ -246,8 +245,7 @@ class PostLogic {
         const searchLower = searchText.toLowerCase();
         
         let query = db.collection("posts")
-            .orderBy("timestamp", "desc")
-            .limit(parseInt(limit));
+            .orderBy("timestamp", "desc");
 
         if (lastPostId) {
             const lastPost = await db.collection("posts").doc(lastPostId).get();

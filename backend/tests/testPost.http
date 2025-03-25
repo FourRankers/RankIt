@@ -65,11 +65,5 @@ Content-Type: application/json
 ### Get posts by category
 GET http://localhost:3000/api/posts/category/miscellaneous
 
-### Get posts by category with pagination
-GET http://localhost:3000/api/posts/category/miscellaneous?limit=5&lastPostId=DKDwX7coP6X3Jzlrxhbe
-
 ### Search posts by title
 GET http://localhost:3000/api/posts/search?query=quad
-
-### Search posts by title with pagination
-GET http://localhost:3000/api/posts/search?query=Rating&limit=5&lastPostId=DKDwX7coP6X3Jzlrxhbe
