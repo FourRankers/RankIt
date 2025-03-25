@@ -76,6 +76,16 @@ export const AddItemDialog = ({ open, onOpenChange, onSuccess }: AddItemDialogPr
       return;
     }
 
+    if (!image) {
+      toast.error('Please upload an image');
+      return;
+    }
+
+    if (!formData.category) {
+      toast.error('Please select a category');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -147,7 +157,9 @@ export const AddItemDialog = ({ open, onOpenChange, onSuccess }: AddItemDialogPr
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Image</label>
+            <label className="text-sm font-medium">
+              Image <span className="text-red-500">*</span>
+            </label>
             <ImageUpload value={image} onChange={setImage} />
           </div>
           <div className="space-y-2">
@@ -176,7 +188,7 @@ export const AddItemDialog = ({ open, onOpenChange, onSuccess }: AddItemDialogPr
           </div>
           <div className="space-y-2">
             <label htmlFor="category" className="text-sm font-medium">
-              Category
+              Category <span className="text-red-500">*</span>
             </label>
             <Select 
               value={formData.category}
