@@ -2,7 +2,7 @@
 
 import { Star, StarHalf } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 interface StarRatingProps {
   rating: number;
@@ -21,7 +21,8 @@ export const StarRating = ({
 }: StarRatingProps) => {
   const [hoverRating, setHoverRating] = useState(0);
 
-  const handleClick = (starNumber: number) => {
+  const handleClick = (e:React.MouseEvent,starNumber: number) => {
+    e.preventDefault();
     if (!readonly && onRatingChange) {
       onRatingChange(starNumber);
     }
@@ -82,7 +83,7 @@ export const StarRating = ({
             {!readonly && (
               <button
                 className="absolute inset-0"
-                onClick={() => handleClick(starNumber)}
+                onClick={(e:React.MouseEvent) => handleClick(e,starNumber)}
                 aria-label={`Rate ${starNumber} stars`}
               />
             )}

@@ -164,11 +164,11 @@ export const AddItemDialog = ({ open, onOpenChange, onSuccess }: AddItemDialogPr
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Rating</label>
-            <StarRating 
-              rating={formData.rating} 
-              onRatingChange={handleRatingChange}
-              readonly={isLoading}
-            />
+              <StarRating 
+                rating={formData.rating} 
+                onRatingChange={handleRatingChange}
+                readonly={isLoading}
+              />
           </div>
           <div className="space-y-2">
             <label htmlFor="description" className="text-sm font-medium">
