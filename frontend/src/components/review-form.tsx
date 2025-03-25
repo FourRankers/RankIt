@@ -6,6 +6,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { StarRating } from "./star-rating"
+import { useAuth } from "@/contexts/auth-context"
 
 interface ReviewFormProps {
   itemId: string
@@ -13,13 +14,42 @@ interface ReviewFormProps {
 }
 
 export const ReviewForm = ({ itemId, onCancel }: ReviewFormProps) => {
+  const { user } = useAuth()
   const [rating, setRating] = useState(0)
   const [content, setContent] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log({ itemId, rating, content })
-    onCancel?.()
+    if (!user) return alert('Please log in first')
+    if (!rating || !content.trim()) return
+
+    setIsSubmitting(true)
+    
+    try {
+      const response = await fetch('http://localhost:8080/api/posts/add-comment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postId: itemId,
+          content: content.trim(),
+          rating,
+          authorId: user.uid,
+          authorName: user.email || 'anonymous'
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(await response.text())
+      }
+
+      onCancel?.()
+    } catch (error) {
+      console.error('Submit Failed:', error)
+      alert(error instanceof Error ? error.message : 'Failed to submit comment')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -52,9 +82,10 @@ export const ReviewForm = ({ itemId, onCancel }: ReviewFormProps) => {
         </Button>
         <Button 
           type="submit"
-          disabled={!rating || !content.trim()}
+          disabled={!rating || !content.trim() || isSubmitting}
+          aria-label={isSubmitting ? 'Submitting...' : 'Submit'}
         >
-          Submit
+          {isSubmitting ? 'Submitting...' : 'Submit'}
         </Button>
       </div>
     </form>

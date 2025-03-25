@@ -22,7 +22,6 @@ export function ReviewCard({
   date, 
   content,
   avatar = '',
-  title = '',
   helpful = 0
 }: ReviewCardProps) {
   const [isLiked, setIsLiked] = useState(false)
@@ -94,8 +93,7 @@ export function ReviewCard({
             <StarRating rating={rating} readonly={true}/>
           </div>
         </div>
-        <h4 className="font-medium">{title}</h4>
-        <p className="text-sm text-muted-foreground mt-1">{content}</p>
+        <p className="text-base text-muted-foreground mt-1">{content}</p>
       </div>
 
       <div className="flex items-center justify-between">

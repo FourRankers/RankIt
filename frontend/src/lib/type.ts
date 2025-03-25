@@ -7,7 +7,19 @@ export interface Post {
   category: string
   authorName: string
   authorRating: number
-  comments: unknown[]
+  averageRating:number
+  comments: {
+    authorId: string
+    authorName: string
+    content: string
+    id: string
+    rating: number
+    timestamp: {
+      _seconds: number
+      _nanoseconds: number
+    }
+    upvotes: number
+  }[]
   reviewCount: number
   timestamp: {
     _seconds: number

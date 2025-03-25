@@ -42,6 +42,7 @@ export default function ItemPage({ params }: { params: Promise<{ id: string }> }
         category: postData.category,
         description: postData.description,
         authorRating: postData.authorRating || 0,
+        averageRating:postData.averageRating || 0,
         reviewCount: postData.comments?.length || 0,
         imageUrl: postData.imageUrl || "",
         authorId: postData.authorId || '',
@@ -113,8 +114,8 @@ export default function ItemPage({ params }: { params: Promise<{ id: string }> }
             </div>
             <h1 className="text-2xl md:text-3xl font-bold">{item?.title}</h1>
             <div className="flex items-center gap-2 mt-2">
-              <StarRating rating={item?.authorRating || 0} readonly={true} />
-              <span className="font-medium">{item?.authorRating.toFixed(1)}</span>
+              <StarRating rating={item?.averageRating || 0} readonly={true} />
+              <span className="font-medium">{item?.averageRating.toFixed(1)}</span>
             </div>
           </div>
           <Separator />
@@ -140,14 +141,6 @@ export default function ItemPage({ params }: { params: Promise<{ id: string }> }
             <Button onClick={() => setShowReviewForm(true)}>
               Write a review
             </Button>
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Sort by:</span>
-              <select className="text-sm border rounded p-1">
-                <option>Most Recent</option>
-                <option>Highest Rated</option>
-                <option>Lowest Rated</option>
-              </select>
-            </div>
           </div>
 
           {showReviewForm && (
@@ -160,36 +153,16 @@ export default function ItemPage({ params }: { params: Promise<{ id: string }> }
           )}
 
           <div className="space-y-4">
-            <ReviewCard
-              author="John Doe"
-              avatar="/placeholder.svg?height=40&width=40"
-              rating={5}
-              date="March 15, 2025"
-              title="Absolutely amazing sound quality!"
-              content="I've been using these headphones for about a month now and I'm blown away by the sound quality and noise cancellation. Battery life is excellent too - I only need to charge them once a week with daily use."
-              helpful={42}
-            />
-
-            <ReviewCard
-              author="Jane Smith"
-              avatar="/placeholder.svg?height=40&width=40"
-              rating={4}
-              date="March 10, 2025"
-              title="Great headphones, minor comfort issues"
-              content="The sound quality and noise cancellation are top-notch. My only complaint is that they get a bit uncomfortable after wearing them for 3+ hours. Otherwise, they're fantastic and the battery life is impressive."
-              helpful={28}
-            />
-
-            <ReviewCard
-              author="Michael Johnson"
-              avatar="/placeholder.svg?height=40&width=40"
-              rating={5}
-              date="March 5, 2025"
-              title="Best headphones I've ever owned"
-              content="These headphones have changed my work-from-home life. The noise cancellation blocks out all distractions, and the sound quality is incredible for both music and calls. The speak-to-chat feature is surprisingly useful too!"
-              helpful={56}
-            />
-
+            {item?.comments.map(comment => (
+              <ReviewCard
+                key={comment.id}
+                author={comment.authorName}
+                avatar="/placeholder.svg?height=40&width=40"
+                rating={comment.rating}
+                date={new Date(comment.timestamp._seconds * 1000).toLocaleDateString()}
+                content={comment.content}
+              />
+            ))}
             <div className="flex justify-center">
               <Button variant="outline">Load more reviews</Button>
             </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Star } from 'lucide-react';
+import { Star, StarHalf } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
@@ -21,33 +21,78 @@ export const StarRating = ({
 }: StarRatingProps) => {
   const [hoverRating, setHoverRating] = useState(0);
 
+  const handleClick = (starNumber: number, isHalf: boolean) => {
+    if (!readonly && onRatingChange) {
+      onRatingChange(starNumber - (isHalf ? 0.5 : 0));
+    }
+  };
+
   return (
     <div className="flex">
       {[...Array(5)].map((_, i) => {
         const starNumber = i + 1;
-        const isActive = (hoverRating || rating) >= starNumber;
+        const fullStarThreshold = starNumber - 0.5;
+        const displayRating = hoverRating || rating;
         
         return (
-          <button
+          <div 
             key={i}
-            type="button"
             className={cn(
-              "relative p-0.5 focus:outline-none",
+              "relative",
               !readonly && "cursor-pointer hover:scale-110 transition-transform"
             )}
-            onClick={() => !readonly && onRatingChange?.(starNumber)}
             onMouseEnter={() => !readonly && setHoverRating(starNumber)}
             onMouseLeave={() => !readonly && setHoverRating(0)}
-            disabled={readonly}
           >
-            <Star 
-              className={cn(
-                `h-${size} w-${size}`,
-                isActive ? "fill-primary text-primary" : "fill-muted text-muted-foreground",
+            <div className="relative" style={{ width: `${size * 4}px`, height: `${size * 4}px` }}>
+              {/* Empty Star */}
+              <Star className={cn(
+                `h-${size} w-${size} absolute`,
+                "fill-muted text-muted-foreground",
                 className
-              )}
-            />
-          </button>
+              )} />
+              
+              {/* Half Star */}
+              <div 
+                className="absolute overflow-hidden"
+                style={{ width: displayRating >= fullStarThreshold ? '50%' : '0%' }}
+              >
+                <StarHalf className={cn(
+                  `h-${size} w-${size}`,
+                  "fill-primary text-primary",
+                  className
+                )} />
+              </div>
+
+              {/* Full Star */}
+              <div 
+                className="absolute"
+                style={{ opacity: displayRating >= starNumber ? 1 : 0 }}
+              >
+                <Star className={cn(
+                  `h-${size} w-${size}`,
+                  "fill-primary text-primary",
+                  className
+                )} />
+              </div>
+            </div>
+
+            {/* Click Areas */}
+            {!readonly && (
+              <>
+                <button
+                  className="absolute left-0 inset-y-0 w-1/2"
+                  onClick={() => handleClick(starNumber, true)}
+                  aria-label={`Rate ${starNumber - 0.5} stars`}
+                />
+                <button
+                  className="absolute right-0 inset-y-0 w-1/2"
+                  onClick={() => handleClick(starNumber, false)}
+                  aria-label={`Rate ${starNumber} stars`}
+                />
+              </>
+            )}
+          </div>
         );
       })}
     </div>
