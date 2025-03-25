@@ -2,16 +2,22 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 
+interface User {
+  uid: string;
+  email?: string;
+  avatar?: string;
+}
+
 interface AuthContextType {
-  user: { uid: string } | null;
-  login: (uid: string) => void;
+  user: User | null;
+  login: (userData: User) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<{ uid: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const uid = localStorage.getItem('uid');
@@ -20,9 +26,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = (uid: string) => {
-    setUser({ uid });
-    localStorage.setItem('uid', uid);
+  const login = (userData: User) => {
+    setUser(userData);
+    localStorage.setItem('uid', userData.uid);
   };
 
   const logout = () => {

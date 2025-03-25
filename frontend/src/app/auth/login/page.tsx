@@ -7,10 +7,10 @@ import Image from "next/image"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { Icons } from '@/components/icons';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/auth-context';
 
 interface LoginFormData {
   email: string;
@@ -24,6 +24,7 @@ export default function LoginPage() {
     email: '',
     password: ''
   });
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,7 +53,10 @@ export default function LoginPage() {
         throw new Error(data.error || 'Login failed');
       }
 
-      localStorage.setItem('uid', data.uid);
+      login({
+        uid: data.uid,
+        email: formData.email,
+      });
       
       toast.success('Login successful');
       router.push('/');
@@ -134,26 +138,6 @@ export default function LoginPage() {
             )}
           </Button>
         </form>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <Separator className="w-full" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <Button variant="outline" type="button" className="w-full" disabled={isLoading}>
-          {isLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Icons.google className="mr-2 h-4 w-4" />
-          )}
-          Sign in with Google
-        </Button>
 
         <p className="text-center text-sm text-muted-foreground">
           <Link

@@ -9,10 +9,21 @@ import { Input } from "@/components/ui/input"
 import { CategoryCard } from "@/components/category-card"
 import { ItemCard } from "@/components/item-card"
 import { AddItemDialog } from '@/components/add-item-dialog'
+import { useAuth } from '@/contexts/auth-context'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu"
+import { useRouter } from 'next/navigation'
 
 export default function HomePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>("All");
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
   const items = [
     {
@@ -24,6 +35,11 @@ export default function HomePage() {
       image: "/default.jpg"
     },
   ]
+
+  const handleLogout = () => {
+    logout();
+    router.push('/auth/login');
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -49,14 +65,35 @@ export default function HomePage() {
                 <span className="sr-only">Search</span>
               </Button>
             </Link>
-            <Link href="/auth/login">
-              <Button variant="outline" size="sm" className="hidden md:inline-flex">
-                Log in
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button size="sm">Sign up</Button>
-            </Link>
+            
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="/avatars/default.png" alt="User avatar" />
+                      <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleLogout}>
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link href="/auth/login">
+                  <Button variant="outline" size="sm" className="hidden md:inline-flex">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button size="sm">Sign up</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
