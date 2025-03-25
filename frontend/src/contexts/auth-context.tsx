@@ -28,12 +28,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem('ranker', userData.uid);
+    localStorage.setItem('ranker', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('uid');
+    localStorage.removeItem('ranker');
   };
 
   return (

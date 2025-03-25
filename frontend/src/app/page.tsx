@@ -10,7 +10,7 @@ import { CategoryCard } from "@/components/category-card"
 import { ItemCard } from "@/components/item-card"
 import { AddItemDialog } from '@/components/add-item-dialog'
 import { useAuth } from '@/contexts/auth-context'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -28,17 +28,6 @@ export default function HomePage() {
   const { user, logout } = useAuth();
   const router = useRouter();
   const [items, setItems] = useState<Post[]>([]);
-
-  // const items = [
-  //   {
-  //     id: "1",
-  //     title: "Sony WH-1000XM4 Wireless Noise Cancelling Headphones",
-  //     category: "Electronics",
-  //     rating: 4.8,
-  //     reviewCount: 1243,
-  //     image: "/default.jpg"
-  //   },
-  // ]
 
   const fetchPosts = async() => {
     const url = new URL('http://localhost:8080/api/posts/get-posts');
@@ -97,7 +86,6 @@ export default function HomePage() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src="/avatars/default.png" alt="User avatar" />
                       <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                   </Button>
@@ -204,7 +192,11 @@ export default function HomePage() {
         <span className="sr-only">Add Item</span>
       </Button>
 
-      <AddItemDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <AddItemDialog 
+        open={dialogOpen} 
+        onOpenChange={setDialogOpen}
+        onSuccess={fetchPosts}
+      />
     </div>
   )
 }

@@ -148,6 +148,7 @@ export default function ItemPage({ params }: { params: Promise<{ id: string }> }
               <ReviewForm 
                 itemId={item?.id || '0'} 
                 onCancel={() => setShowReviewForm(false)}
+                onSuccess={fetchPost}
               />
             </div>
           )}
@@ -156,16 +157,25 @@ export default function ItemPage({ params }: { params: Promise<{ id: string }> }
             {item?.comments.map(comment => (
               <ReviewCard
                 key={comment.id}
+                postId={item.id}
+                commentId={comment.id}
                 author={comment.authorName}
-                avatar="/placeholder.svg?height=40&width=40"
                 rating={comment.rating}
                 date={new Date(comment.timestamp._seconds * 1000).toLocaleDateString()}
                 content={comment.content}
+                upvotes={comment.upvotes || 0}
               />
             ))}
-            <div className="flex justify-center">
-              <Button variant="outline">Load more reviews</Button>
-            </div>
+
+            {item?.comments.length ? (
+              <div className="flex justify-center">
+                <Button variant="outline">Load more reviews</Button>
+              </div>
+            ) : (
+              <div className="text-center text-muted-foreground">
+                No reviews yet. Be the first to write one!
+              </div>
+            )}
           </div>
         </div>
       </div>
