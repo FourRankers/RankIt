@@ -172,12 +172,12 @@ router.get("/get-rating/:postId", async (req, res) => {
     }
 });
 
-// Vote on a comment (upvote or downvote)
+// Vote on a comment 
 router.post("/:postId/comments/:commentId/vote", async (req, res) => {
   try {
     const { postId, commentId } = req.params;
     const userId = req.body.userId; // Get userId from request body instead of params
-    const { vote } = req.body; // 1 for upvote, -1 for downvote
+    const { vote } = req.body;
 
     if (!vote || (vote !== 1 && vote !== -1)) {
       return res.status(400).json({ error: "Invalid vote value" });
