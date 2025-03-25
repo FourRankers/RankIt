@@ -13,7 +13,7 @@ import { AddItemDialog } from '@/components/add-item-dialog'
 
 export default function HomePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>("All");
 
   // useEffect(() => {
   //   const fetchItems = async () => {

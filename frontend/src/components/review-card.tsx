@@ -1,8 +1,10 @@
-import { Flag, ThumbsUp } from "lucide-react"
+import { useState } from 'react'
+import { Flag, ThumbsUp, ThumbsDown } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { StarIcon } from 'lucide-react'
+import {StarRating} from '@/components/star-rating'
+import { cn } from "@/lib/utils"
 
 interface ReviewCardProps {
   author: string
@@ -23,6 +25,35 @@ export function ReviewCard({
   title = '',
   helpful = 0
 }: ReviewCardProps) {
+  const [isLiked, setIsLiked] = useState(false)
+  const [isDisliked, setIsDisliked] = useState(false)
+  const [likeCount, setLikeCount] = useState(helpful)
+
+  const handleLike = () => {
+    if (isLiked) {
+      setLikeCount(prev => prev - 1)
+      setIsLiked(false)
+    } else {
+      if (isDisliked) {
+        setIsDisliked(false)
+      }
+      setLikeCount(prev => prev + 1)
+      setIsLiked(true)
+    }
+  }
+
+  const handleDislike = () => {
+    if (isDisliked) {
+      setIsDisliked(false)
+    } else {
+      if (isLiked) {
+        setLikeCount(prev => prev - 1)
+        setIsLiked(false)
+      }
+      setIsDisliked(true)
+    }
+  }
+
   return (
     <div className="border rounded-lg p-4 space-y-3">
       <div className="flex justify-between">
@@ -60,14 +91,7 @@ export function ReviewCard({
       <div>
         <div className="flex items-center gap-1 mb-1">
           <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <StarIcon
-                key={i}
-                className={`w-4 h-4 ${
-                  i < rating ? 'fill-primary text-primary' : 'fill-muted text-muted-foreground'
-                }`}
-              />
-            ))}
+            <StarRating rating={rating} readonly={true}/>
           </div>
         </div>
         <h4 className="font-medium">{title}</h4>
@@ -75,10 +99,31 @@ export function ReviewCard({
       </div>
 
       <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" className="text-xs flex items-center gap-1">
-          <ThumbsUp className="h-3 w-3" />
-          <span>Helpful ({helpful})</span>
-        </Button>
+        <div className="flex">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className={cn(
+              "text-xs flex items-center",
+              isLiked && "text-primary"
+            )}
+            onClick={handleLike}
+          >
+            <ThumbsUp className="h-3 w-3" />
+            <span>Like ({likeCount})</span>
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className={cn(
+              "text-xs",
+              isDisliked && "text-primary"
+            )}
+            onClick={handleDislike}
+          >
+            <ThumbsDown className="h-3 w-3" />
+          </Button>
+        </div>
       </div>
     </div>
   )
