@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ThumbsUp, ThumbsDown } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import {StarRating} from '@/components/star-rating'
+import { StarRating } from '@/components/star-rating'
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/contexts/auth-context"
 import { toast } from "sonner"
@@ -13,7 +13,6 @@ interface ReviewCardProps {
   date: string
   content: string
   avatar?: string
-  title?: string
   upvotes?: number
   postId: string
   commentId: string
@@ -29,59 +28,67 @@ export function ReviewCard({
   postId,
   commentId
 }: ReviewCardProps) {
-  const { user } = useAuth()
   const [isLiked, setIsLiked] = useState(false)
   const [isDisliked, setIsDisliked] = useState(false)
   const [likeCount, setLikeCount] = useState(upvotes)
+  const { user } = useAuth()
 
-  const handleVote = async (voteType: 'like' | 'dislike') => {
-    if (!user) {
-      toast.error('Please login to vote')
-      return
-    }
-
-    try {
-      const voteValue = voteType === 'like' ? 1 : -1
-      const response = await fetch(
-        `http://localhost:8080/api/posts/${postId}/comments/${commentId}/vote`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: user.uid,
-            vote: voteValue
-          })
-        }
-      )
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Vote failed')
-      }
-
-      const result = await response.json()
-      setLikeCount(result.currentVotes)
-      
-      // 更新投票状态
-      if (voteType === 'like') {
-        setIsLiked(!isLiked)
-        setIsDisliked(false)
-      } else {
-        setIsDisliked(!isDisliked)
-        setIsLiked(false)
-      }
-    } catch (error) {
-      console.error('Voting error:', error)
-      toast.error(error instanceof Error ? error.message : 'Vote failed')
+  const handleLike = () => {
+    if (isLiked) {
+      setLikeCount(prev => prev - 1)
+      setIsLiked(false)
+    } else {
+      setIsDisliked(false)
+      setLikeCount(upvotes)
+      setLikeCount(prev => prev + 1)
+      setIsLiked(true)
     }
   }
 
-  const handleLike = () => handleVote('like')
-  const handleDislike = () => handleVote('dislike')
+  const handleDislike = () => {
+    if (isDisliked) {
+      setIsDisliked(false)
+      setLikeCount(prev => prev + 1)
+    } else {
+        setLikeCount(upvotes)
+        setLikeCount(prev => prev - 1)
+        setIsLiked(false)
+        setIsDisliked(true)
+    }
+  }
+
+
+  const updateVote = async (voteValue:number) => {
+    try {
+    const response = await fetch(
+      `http://localhost:8080/api/posts/${postId}/comments/${commentId}/vote`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user?.uid,
+          vote: voteValue
+        })
+      }
+    )
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Vote failed')
+    }
+
+    const result = await response.json()
+    setLikeCount(result.currentVotes)
+
+  } catch (error) {
+    console.error('Voting error:', error)
+    toast.error(error instanceof Error ? error.message : 'Vote failed')
+  }
+  }
 
   useEffect(()=>{
     console.log(likeCount);
-
+    updateVote(likeCount)
   },[likeCount])
 
   return (
