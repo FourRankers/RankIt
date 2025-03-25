@@ -172,15 +172,81 @@ router.get("/get-rating/:postId", async (req, res) => {
     }
 });
 
-// Keep the upvote comment route
-router.post("/upvote-comment/:postId/:commentId", verifyAuth, async (req, res) => {
-    try {
-        const { postId, commentId } = req.params;
-        await PostLogic.upvoteComment(postId, commentId, req.user.uid);
-        res.status(200).json({ message: "Comment upvoted successfully" });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+// Vote on a comment (upvote or downvote)
+router.post("/:postId/comments/:commentId/vote", async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const userId = req.body.userId; // Get userId from request body instead of params
+    const { vote } = req.body; // 1 for upvote, -1 for downvote
+
+    if (!vote || (vote !== 1 && vote !== -1)) {
+      return res.status(400).json({ error: "Invalid vote value" });
     }
+
+    const postRef = db.collection("posts").doc(postId);
+    const postDoc = await postRef.get();
+
+    if (!postDoc.exists) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const commentRef = postRef.collection("comments").doc(commentId);
+    const commentDoc = await commentRef.get();
+
+    if (!commentDoc.exists) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    // Check if user has already voted
+    const userVoteRef = db.collection("users")
+      .doc(userId)
+      .collection("commentVotes")
+      .doc(commentId);
+
+    const userVoteDoc = await userVoteRef.get();
+
+    if (userVoteDoc.exists) {
+      const currentVote = userVoteDoc.data().vote;
+      
+      // If clicking the same vote button again, remove the vote
+      if (currentVote === vote) {
+        await commentRef.update({
+          upvotes: vote
+        });
+        await userVoteRef.delete();
+        return res.status(200).json({ 
+          message: "Vote count updated successfully",
+          currentVotes: vote
+        });
+      }
+      
+      // If changing vote, update the vote count
+      await commentRef.update({
+        upvotes: vote
+      });
+      await userVoteRef.update({ vote });
+      return res.status(200).json({ 
+        message: "Vote updated successfully",
+        currentVotes: vote
+      });
+    }
+
+    // First time voting
+    await commentRef.update({
+      upvotes: vote
+    });
+    await userVoteRef.set({ 
+      vote,
+      postId
+    });
+    res.status(200).json({ 
+      message: "Vote recorded successfully",
+      currentVotes: vote
+    });
+  } catch (error) {
+    console.error("Error voting on comment:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;
