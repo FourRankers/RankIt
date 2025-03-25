@@ -11,7 +11,7 @@ export const ItemCard = ({
   title,
   imageUrl,
   category,
-  authorRating,
+  averageRating,
   timestamp
 }: Partial<Post>) => {
   const router = useRouter()
@@ -49,9 +49,9 @@ export const ItemCard = ({
         </div>
         <div className="font-semibold line-clamp-2">{title}</div>
         <div className="flex items-center gap-2">
-          <StarRating rating={authorRating || 0} size={4} readonly />
+          <StarRating rating={averageRating || 0} size={4} readonly />
           <span className="text-base text-muted-foreground">
-            {authorRating}
+            {averageRating}
           </span>
         </div>
       </div>

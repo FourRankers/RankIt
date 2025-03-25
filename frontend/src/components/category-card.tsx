@@ -13,7 +13,6 @@ import { Card, CardContent } from "@/components/ui/card"
 
 interface CategoryCardProps {
   name: string
-  count: number
   icon: string
   className?: string
   isSelected?: boolean
@@ -22,7 +21,6 @@ interface CategoryCardProps {
 
 export function CategoryCard({ 
   name, 
-  count, 
   icon, 
   className,
   isSelected = false,
@@ -48,7 +46,6 @@ export function CategoryCard({
         </div>
         <div>
           <h3 className="font-medium text-sm">{name}</h3>
-          <p className="text-xs text-muted-foreground">{count} items</p>
         </div>
       </CardContent>
     </Card>

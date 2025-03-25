@@ -33,9 +33,7 @@ export function ReviewCard({
       setLikeCount(prev => prev - 1)
       setIsLiked(false)
     } else {
-      if (isDisliked) {
         setIsDisliked(false)
-      }
       setLikeCount(prev => prev + 1)
       setIsLiked(true)
     }
@@ -44,12 +42,11 @@ export function ReviewCard({
   const handleDislike = () => {
     if (isDisliked) {
       setIsDisliked(false)
+      setLikeCount(prev => prev + 1)
     } else {
-      if (isLiked) {
         setLikeCount(prev => prev - 1)
         setIsLiked(false)
-      }
-      setIsDisliked(true)
+        setIsDisliked(true)
     }
   }
 
@@ -108,7 +105,7 @@ export function ReviewCard({
             onClick={handleLike}
           >
             <ThumbsUp className="h-3 w-3" />
-            <span>Like ({likeCount})</span>
+            <span>Votes({likeCount})</span>
           </Button>
           <Button 
             variant="ghost" 

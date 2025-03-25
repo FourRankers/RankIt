@@ -135,42 +135,36 @@ export default function HomePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               <CategoryCard 
                 name="All" 
-                count={7515}
                 icon="layout-grid"
                 isSelected={selectedCategory === "All"}
                 onClick={() => setSelectedCategory("All")}
               />
               <CategoryCard 
                 name="Course" 
-                count={1243} 
                 icon="course"
                 isSelected={selectedCategory === "Course"}
                 onClick={() => setSelectedCategory("Course")}
               />
               <CategoryCard 
                 name="Restaurant" 
-                count={876} 
                 icon="restaurant"
                 isSelected={selectedCategory === "Restaurant"}
                 onClick={() => setSelectedCategory("Restaurant")}
               />
               <CategoryCard 
                 name="Building" 
-                count={532} 
                 icon="building"
                 isSelected={selectedCategory === "Building"}
                 onClick={() => setSelectedCategory("Building")}
               />
               <CategoryCard 
                 name="Toilet" 
-                count={156} 
                 icon="toilet"
                 isSelected={selectedCategory === "Toilet"}
                 onClick={() => setSelectedCategory("Toilet")}
               />
               <CategoryCard 
                 name="Other" 
-                count={765} 
                 icon="other"
                 isSelected={selectedCategory === "Other"}
                 onClick={() => setSelectedCategory("Other")}
