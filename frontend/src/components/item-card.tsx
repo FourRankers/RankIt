@@ -3,25 +3,23 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { StarRating } from "./star-rating"
-
-interface ItemCardProps {
-  id: string
-  title: string
-  category: string
-  rating: number
-  reviewCount: number
-  image: string
-}
+import { Post } from "@/lib/type"
+import { useState } from "react"
 
 export const ItemCard = ({
   id,
   title,
+  imageUrl,
   category,
-  rating,
-  reviewCount,
-  image,
-}: ItemCardProps) => {
+  authorRating,
+  timestamp
+}: Partial<Post>) => {
   const router = useRouter()
+  const [image, setImage] = useState<string>(imageUrl || '/default.jpg')
+
+  const handleError = () => {
+    setImage('/default.jpg')
+  }
 
   return (
     <div 
@@ -30,20 +28,30 @@ export const ItemCard = ({
     >
       <div className="relative aspect-square mb-3 rounded-lg overflow-hidden">
         <Image
-          src={image || "/default.jpg"}
-          alt={title}
+          src={image}
+          alt={title || 'image'}
+          onError={handleError}
           fill
           className="object-cover transition-transform group-hover:scale-105"
         />
       </div>
       
       <div className="space-y-2">
-        <div className="text-sm text-muted-foreground">{category}</div>
+        <div className="text-sm text-muted-foreground flex justify-between">
+          <span>{category}</span>
+          <span>
+            {new Date((timestamp?._seconds || 0) * 1000).toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })}
+          </span>
+        </div>
         <div className="font-semibold line-clamp-2">{title}</div>
         <div className="flex items-center gap-2">
-          <StarRating rating={rating} size={4} />
-          <span className="text-sm text-muted-foreground">
-            ({reviewCount})
+          <StarRating rating={authorRating || 0} size={4} readonly />
+          <span className="text-base text-muted-foreground">
+            {authorRating}
           </span>
         </div>
       </div>

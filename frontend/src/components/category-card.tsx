@@ -1,6 +1,13 @@
 import type React from "react"
 import type { LucideIcon } from 'lucide-react'
-import { Book, Film, Gamepad2, Laptop, MoreHorizontal, Utensils, LayoutGrid } from "lucide-react"
+import { 
+  LayoutGrid, 
+  GraduationCap, 
+  Utensils, 
+  Building2, 
+  MoreHorizontal, 
+  Toilet
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -52,20 +59,18 @@ function getIconByName(name: string): LucideIcon {
   switch (name.toLowerCase()) {
     case "layout-grid":
       return LayoutGrid
-    case "laptop":
-      return Laptop
-    case "book":
-      return Book
-    case "film":
-      return Film
-    case "gamepad-2":
-      return Gamepad2
-    case "utensils":
+    case "course":
+      return GraduationCap
+    case "restaurant":
       return Utensils
+    case "building":
+      return Building2
+    case "toilet":
+      return Toilet
     case "other":
       return MoreHorizontal
     default:
-      return Laptop
+      return LayoutGrid
   }
 }
 

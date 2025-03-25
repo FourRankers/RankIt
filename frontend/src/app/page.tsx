@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from "next/link"
 import { Search, Plus } from "lucide-react"
 import Image from "next/image"
@@ -18,23 +18,49 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from 'next/navigation'
+import { Post } from '@/lib/type';
+
+
 
 export default function HomePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>("All");
   const { user, logout } = useAuth();
   const router = useRouter();
+  const [items, setItems] = useState<Post[]>([]);
 
-  const items = [
-    {
-      id: "1",
-      title: "Sony WH-1000XM4 Wireless Noise Cancelling Headphones",
-      category: "Electronics",
-      rating: 4.8,
-      reviewCount: 1243,
-      image: "/default.jpg"
-    },
-  ]
+  // const items = [
+  //   {
+  //     id: "1",
+  //     title: "Sony WH-1000XM4 Wireless Noise Cancelling Headphones",
+  //     category: "Electronics",
+  //     rating: 4.8,
+  //     reviewCount: 1243,
+  //     image: "/default.jpg"
+  //   },
+  // ]
+
+  const fetchPosts = async() => {
+    const url = new URL('http://localhost:8080/api/posts/get-posts');
+    url.searchParams.append('limit', '10');
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    setItems(data)
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to create post');
+    }
+  }
+
+  useEffect(()=>{
+    fetchPosts()
+  },[])
 
   const handleLogout = () => {
     logout();
@@ -114,33 +140,33 @@ export default function HomePage() {
                 isSelected={selectedCategory === "All"}
                 onClick={() => setSelectedCategory("All")}
               />
-              <CategoryCard
-                name="Electronics" 
+              <CategoryCard 
+                name="Course" 
                 count={1243} 
-                icon="laptop"
-                isSelected={selectedCategory === "Electronics"}
-                onClick={() => setSelectedCategory("Electronics")}
+                icon="course"
+                isSelected={selectedCategory === "Course"}
+                onClick={() => setSelectedCategory("Course")}
               />
               <CategoryCard 
-                name="Books" 
+                name="Restaurant" 
                 count={876} 
-                icon="book"
-                isSelected={selectedCategory === "Books"}
-                onClick={() => setSelectedCategory("Books")}
+                icon="restaurant"
+                isSelected={selectedCategory === "Restaurant"}
+                onClick={() => setSelectedCategory("Restaurant")}
               />
               <CategoryCard 
-                name="Movies" 
-                count={1532} 
-                icon="film"
-                isSelected={selectedCategory === "Movies"}
-                onClick={() => setSelectedCategory("Movies")}
+                name="Building" 
+                count={532} 
+                icon="building"
+                isSelected={selectedCategory === "Building"}
+                onClick={() => setSelectedCategory("Building")}
               />
               <CategoryCard 
-                name="Restaurants" 
-                count={2156} 
-                icon="utensils"
-                isSelected={selectedCategory === "Restaurants"}
-                onClick={() => setSelectedCategory("Restaurants")}
+                name="Toilet" 
+                count={156} 
+                icon="toilet"
+                isSelected={selectedCategory === "Toilet"}
+                onClick={() => setSelectedCategory("Toilet")}
               />
               <CategoryCard 
                 name="Other" 

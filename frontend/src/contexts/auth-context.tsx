@@ -20,15 +20,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const uid = localStorage.getItem('uid');
-    if (uid) {
-      setUser({ uid });
+    const user = localStorage.getItem('ranker');
+    if (user) {
+      setUser(JSON.parse(user));
     }
   }, []);
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem('uid', userData.uid);
+    localStorage.setItem('ranker', userData.uid);
   };
 
   const logout = () => {
