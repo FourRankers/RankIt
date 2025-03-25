@@ -164,7 +164,7 @@ router.post("/upload-image", upload.single('image'), async (req, res) => {
 // Create a new post (without image upload)
 router.post("/create-post", async (req, res) => {
   try {
-    const { title, description, authorId, authorName, imageUrl } = req.body;
+    const { title, description, authorId, authorName, imageUrl, category } = req.body;
 
     if (!title || !description || !authorId || !authorName) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -176,6 +176,7 @@ router.post("/create-post", async (req, res) => {
       authorId,
       authorName,
       imageUrl,
+      category,
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
       upvotes: 0
     });
@@ -236,7 +237,9 @@ router.get("/get-post/:postId", async (req, res) => {
     const post = {
       id: postDoc.id,
       ...postDoc.data(),
-      comments
+      comments,
+      category: postDoc.data().category, // Include category
+      url: postDoc.data().imageUrl // Include image URL as url
     };
 
     res.status(200).json(post);
