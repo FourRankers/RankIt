@@ -15,6 +15,7 @@ import { Icons } from '@/components/icons';
 interface AddItemDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
 const categories = [
@@ -33,7 +34,7 @@ interface AddItemFormData {
   rating: number;
 }
 
-export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
+export const AddItemDialog = ({ open, onOpenChange, onSuccess }: AddItemDialogProps) => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<AddItemFormData>({
@@ -71,6 +72,7 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
     
     if (!user) {
       toast.error('Please login to create a post');
+      window.location.href = '/auth/login';
       return;
     }
 
@@ -109,6 +111,11 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
         rating: 0
       });
       setImage(null);
+      
+      if (onSuccess) {
+        onSuccess();
+      }
+
     } catch (error) {
       console.error('Error creating post:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to create post');

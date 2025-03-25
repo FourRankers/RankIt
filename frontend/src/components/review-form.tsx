@@ -11,9 +11,10 @@ import { useAuth } from "@/contexts/auth-context"
 interface ReviewFormProps {
   itemId: string
   onCancel?: () => void
+  onSuccess?: () => void
 }
 
-export const ReviewForm = ({ itemId, onCancel }: ReviewFormProps) => {
+export const ReviewForm = ({ itemId, onCancel, onSuccess }: ReviewFormProps) => {
   const { user } = useAuth()
   const [rating, setRating] = useState(0)
   const [content, setContent] = useState("")
@@ -44,6 +45,9 @@ export const ReviewForm = ({ itemId, onCancel }: ReviewFormProps) => {
       }
 
       onCancel?.()
+      if (onSuccess) {
+        onSuccess()
+      }
     } catch (error) {
       console.error('Submit Failed:', error)
       alert(error instanceof Error ? error.message : 'Failed to submit comment')
