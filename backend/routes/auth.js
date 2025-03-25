@@ -1,98 +1,115 @@
 const express = require("express");
-const admin = require("firebase-admin");
-const { validatePassword } = require("../functions/passwordValidation");
 const router = express.Router();
+const { db } = require("../config.js"); // Import the initialized db instance
+
+// Add verifyAuth middleware
+const verifyAuth = async (req, res, next) => {
+  const { userId } = req.headers;
+  
+  if (!userId) {
+    return res.status(401).json({ error: "No user ID provided" });
+  }
+
+  try {
+    const userDoc = await db.collection('users').doc(userId).get();
+
+    if (!userDoc.exists) {
+      throw new Error('Invalid user ID');
+    }
+
+    // Add user info to request object
+    const userData = userDoc.data();
+    req.user = {
+      uid: userDoc.id,
+      email: userData.email
+    };
+    
+    next();
+  } catch (error) {
+    console.error("Error verifying user:", error);
+    res.status(401).json({ error: "Invalid user ID" });
+  }
+};
 
 // Sign up a new user
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
   try {
-    // Validate password before creating user
-    validatePassword(password);
-    
-    const userRecord = await admin.auth().createUser({
+    // Check for required fields
+    if (!email) {
+      throw new Error('Email is required');
+    }
+    if (!password) {
+      throw new Error('Password is required');
+    }
+
+    // Validate email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      throw new Error('Invalid email format');
+    }
+
+    // Check if email already exists
+    const existingUsers = await db.collection('users')
+      .where('email', '==', email)
+      .get();
+
+    if (!existingUsers.empty) {
+      throw new Error('Email already registered');
+    }
+
+    // Create user in Firebase
+    const newUserRef = await db.collection('users').add({
       email,
-      password,
+      password,  // Password should be pre-hashed from frontend
+      createdAt: new Date()
     });
-    res.status(201).json({ message: "User created successfully", uid: userRecord.uid });
+
+    const newUser = await newUserRef.get();
+    
+    res.status(201).json({ 
+      message: "User created successfully", 
+      uid: newUser.id,
+      email: newUser.data().email
+    });
+
   } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(400).json({ error: error.message });
+    console.error("Error in signup process:", error);
+    res.status(400).json({ 
+      error: error.message || 'Error during signup process'
+    });
   }
 });
 
-// Log in a user
+// Login endpoint
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+
   try {
-    const userRecord = await admin.auth().getUserByEmail(email);
-    // Here you would typically verify the password using a custom method
-    // Firebase Admin SDK does not provide password verification
-    res.status(200).json({ message: "User logged in", uid: userRecord.uid });
+    // Get user from Firebase
+    const usersRef = await db.collection('users')
+      .where('email', '==', email)
+      .where('password', '==', password)
+      .get();
+
+    if (usersRef.empty) {
+      throw new Error('Invalid credentials');
+    }
+
+    const user = usersRef.docs[0];
+    
+    res.status(200).json({ 
+      message: "Login successful",
+      uid: user.id,
+      email: user.data().email
+    });
   } catch (error) {
-    console.error("Error logging in user:", error);
+    console.error("Error in login process:", error);
     res.status(401).json({ error: "Invalid credentials" });
   }
 });
 
-// Log out a user (Firebase does not have a server-side logout, this is typically handled on the client)
-router.post("/logout", (req, res) => {
-  // Invalidate the user's session on the client-side
-  res.status(200).json({ message: "User logged out" });
-});
-
-// Send password reset email
-router.post("/send-password-reset", async (req, res) => {
-  const { email } = req.body;
-  try {
-    await admin.auth().sendPasswordResetEmail(email);
-    res.status(200).json({ message: "Password reset email sent" });
-  } catch (error) {
-    console.error("Error sending password reset email:", error);
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Send sign-in link for passwordless authentication
-router.post("/send-signin-link", async (req, res) => {
-  const { email, redirectUrl } = req.body;
-  try {
-    const actionCodeSettings = {
-      url: redirectUrl || `${process.env.FRONTEND_URL}/auth/verify-email`, // URL to redirect after email verification
-      handleCodeInApp: true,
-    };
-
-    await admin.auth().generateSignInWithEmailLink(email, actionCodeSettings);
-    res.status(200).json({ 
-      message: "Sign-in link sent successfully",
-      note: "Please check your email for the sign-in link"
-    });
-  } catch (error) {
-    console.error("Error sending sign-in link:", error);
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Verify email link and sign in user
-router.post("/verify-email-link", async (req, res) => {
-  const { email, emailLink } = req.body;
-  try {
-    // Verify the email link
-    const result = await admin.auth().verifySignInWithEmailLink(email, emailLink);
-    const { uid } = result.user;
-    
-    // Generate a custom token for the user
-    const customToken = await admin.auth().createCustomToken(uid);
-    
-    res.status(200).json({ 
-      message: "Email verified successfully",
-      customToken,
-      uid
-    });
-  } catch (error) {
-    console.error("Error verifying email link:", error);
-    res.status(400).json({ error: error.message });
-  }
-});
-
-module.exports = router;
+module.exports = { router, verifyAuth };

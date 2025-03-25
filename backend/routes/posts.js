@@ -4,6 +4,8 @@ const { supabase } = require("../config.js");
 const multer = require("multer");
 const { v4: uuidv4 } = require('uuid');
 const PostLogic = require("../functions/postLogic");
+const auth = require("./auth");  // Update import
+const verifyAuth = auth.verifyAuth;  // Get verifyAuth from auth module
 
 // Configure multer for memory storage
 const storage = multer.memoryStorage();
@@ -102,9 +104,14 @@ router.post("/upload-image", upload.single('image'), async (req, res) => {
 });
 
 // Create a new post
-router.post("/create-post", async (req, res) => {
+router.post("/create-post", verifyAuth, async (req, res) => {
     try {
-        const result = await PostLogic.createPost(req.body);
+        const postData = {
+            ...req.body,
+            authorId: req.user.uid, // Use the authenticated user's ID
+            authorName: req.user.email // Use the authenticated user's email
+        };
+        const result = await PostLogic.createPost(postData);
         res.status(201).json({ 
             message: "Post created successfully", 
             ...result
@@ -137,9 +144,14 @@ router.get("/get-post/:postId", async (req, res) => {
 });
 
 // Add a comment with rating to a post
-router.post("/add-comment", async (req, res) => {
+router.post("/add-comment", verifyAuth, async (req, res) => {
     try {
-        const result = await PostLogic.addComment(req.body);
+        const commentData = {
+            ...req.body,
+            authorId: req.user.uid,
+            authorName: req.user.email
+        };
+        const result = await PostLogic.addComment(commentData);
         res.status(201).json({ 
             message: "Comment and rating added successfully", 
             ...result
@@ -161,11 +173,10 @@ router.get("/get-rating/:postId", async (req, res) => {
 });
 
 // Keep the upvote comment route
-router.post("/upvote-comment/:postId/:commentId", async (req, res) => {
+router.post("/upvote-comment/:postId/:commentId", verifyAuth, async (req, res) => {
     try {
         const { postId, commentId } = req.params;
-        const { userId } = req.body;
-        await PostLogic.upvoteComment(postId, commentId, userId);
+        await PostLogic.upvoteComment(postId, commentId, req.user.uid);
         res.status(200).json({ message: "Comment upvoted successfully" });
     } catch (error) {
         res.status(500).json({ error: error.message });
