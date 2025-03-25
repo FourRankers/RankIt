@@ -26,8 +26,13 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     const userRecord = await admin.auth().getUserByEmail(email);
-    // Here you would typically verify the password using a custom method
-    // Firebase Admin SDK does not provide password verification
+    
+    // Verify the password using Firebase's built-in method
+    const isPasswordValid = await admin.auth().verifyIdToken(userRecord.uid, { password });
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
     res.status(200).json({ message: "User logged in", uid: userRecord.uid });
   } catch (error) {
     console.error("Error logging in user:", error);

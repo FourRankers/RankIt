@@ -59,61 +59,61 @@ router.get("/get-image/:fileName", async (req, res) => {
 });
 
 // Test endpoint for image upload
-router.post("/test-upload", upload.single('image'), async (req, res) => {
-  try {
-    console.log('[DEBUG] Received test-upload request');
-    console.log('[DEBUG] req.file:', req.file);
-    console.log('[DEBUG] req.body:', req.body);
+// router.post("/test-upload", upload.single('image'), async (req, res) => {
+//   try {
+//     console.log('[DEBUG] Received test-upload request');
+//     console.log('[DEBUG] req.file:', req.file);
+//     console.log('[DEBUG] req.body:', req.body);
 
-    if (!req.file) {
-      return res.status(400).json({ error: "No image file provided" });
-    }
+//     if (!req.file) {
+//       return res.status(400).json({ error: "No image file provided" });
+//     }
 
-    const file = req.file;
-    const fileExt = file.mimetype.split('/')[1];
-    const fileName = `test-${uuidv4()}.${fileExt}`;
-    const filePath = `posts/${fileName}`;
+//     const file = req.file;
+//     const fileExt = file.mimetype.split('/')[1];
+//     const fileName = `test-${uuidv4()}.${fileExt}`;
+//     const filePath = `posts/${fileName}`;
 
-    console.log('[DEBUG] Attempting Supabase upload:', { fileName, filePath });
+//     console.log('[DEBUG] Attempting Supabase upload:', { fileName, filePath });
 
-    // Upload to Supabase Storage
-    const { data, error: uploadError } = await supabase.storage
-      .from('rankit-images')
-      .upload(filePath, file.buffer, {
-        contentType: file.mimetype,
-        cacheControl: '3600'
-      });
+//     // Upload to Supabase Storage
+//     const { data, error: uploadError } = await supabase.storage
+//       .from('rankit-images')
+//       .upload(filePath, file.buffer, {
+//         contentType: file.mimetype,
+//         cacheControl: '3600'
+//       });
 
-    if (uploadError) {
-      console.error('[DEBUG] Supabase upload error:', uploadError);
-      throw new Error(`Error uploading image: ${uploadError.message}`);
-    }
+//     if (uploadError) {
+//       console.error('[DEBUG] Supabase upload error:', uploadError);
+//       throw new Error(`Error uploading image: ${uploadError.message}`);
+//     }
 
-    console.log('[DEBUG] Supabase upload successful:', data);
+//     console.log('[DEBUG] Supabase upload successful:', data);
 
-    // Get the public URL
-    const { data: { publicUrl }, error: urlError } = supabase.storage
-      .from('rankit-images')
-      .getPublicUrl(filePath);
+//     // Get the public URL
+//     const { data: { publicUrl }, error: urlError } = supabase.storage
+//       .from('rankit-images')
+//       .getPublicUrl(filePath);
 
-    if (urlError) {
-      console.error('[DEBUG] Supabase URL error:', urlError);
-      throw new Error(`Error getting public URL: ${urlError.message}`);
-    }
+//     if (urlError) {
+//       console.error('[DEBUG] Supabase URL error:', urlError);
+//       throw new Error(`Error getting public URL: ${urlError.message}`);
+//     }
 
-    res.status(200).json({
-      message: "Image uploaded successfully",
-      fileName,
-      filePath,
-      publicUrl,
-      fileSize: file.size,
-      mimeType: file.mimetype
-    });
-  } catch (error) {
-    console.error("[DEBUG] Error in test-upload:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
+//     res.status(200).json({
+//       message: "Image uploaded successfully",
+//       fileName,
+//       filePath,
+//       publicUrl,
+//       fileSize: file.size,
+//       mimeType: file.mimetype
+//     });
+//   } catch (error) {
+//     console.error("[DEBUG] Error in test-upload:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 // Dedicated route for image upload
 router.post("/upload-image", upload.single('image'), async (req, res) => {
