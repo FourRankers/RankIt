@@ -190,31 +190,31 @@ router.post("/:userId/vote-comment/:postId/:commentId", async (req, res) => {
       
       // If clicking the same vote button again, remove the vote
       if (currentVote === vote) {
-        // Remove the vote
+        // Set the votes directly to the provided number
         await commentRef.update({
-          upvotes: admin.firestore.FieldValue.increment(-currentVote)
+          upvotes: vote  // Directly set the number of votes
         });
         await userVoteRef.delete();
         return res.status(200).json({ 
-          message: "Vote removed successfully",
-          currentVotes: commentDoc.data().upvotes - currentVote
+          message: "Vote count updated successfully",
+          currentVotes: vote  // Return the new vote count
         });
       }
       
       // If changing vote, update the vote count
       await commentRef.update({
-        upvotes: admin.firestore.FieldValue.increment(vote - currentVote)
+        upvotes: vote  // Directly set the new vote count
       });
       await userVoteRef.update({ vote });
       return res.status(200).json({ 
         message: "Vote updated successfully",
-        currentVotes: commentDoc.data().upvotes + (vote - currentVote)
+        currentVotes: vote  // Return the new vote count
       });
     }
 
     // First time voting
     await commentRef.update({
-      upvotes: admin.firestore.FieldValue.increment(vote)
+      upvotes: vote  // Directly set the vote count
     });
     await userVoteRef.set({ 
       vote,
@@ -222,7 +222,7 @@ router.post("/:userId/vote-comment/:postId/:commentId", async (req, res) => {
     });
     res.status(200).json({ 
       message: "Vote recorded successfully",
-      currentVotes: commentDoc.data().upvotes + vote
+      currentVotes: vote  // Return the new vote count
     });
   } catch (error) {
     console.error("Error voting on comment:", error);
