@@ -32,7 +32,10 @@ export const ItemCard = ({
           alt={title || 'image'}
           onError={handleError}
           fill
+          priority
           className="object-cover transition-transform group-hover:scale-105"
+          loading="eager"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       

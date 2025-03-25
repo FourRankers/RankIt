@@ -7,11 +7,9 @@ import Image from "next/image";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { Icons } from '@/components/icons';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { hashPassword } from '@/lib/crypto';
 
 interface RegisterFormData {
   email: string;
@@ -47,16 +45,14 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const hashedPassword = await hashPassword(formData.password);
-      
-      const response = await fetch('http://localhost:8080/auth/signup', {
+      const response = await fetch('http://localhost:8080/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: formData.email,
-          password: hashedPassword,
+          password: formData.password,
         }),
       });
 
@@ -160,26 +156,6 @@ export default function RegisterPage() {
             )}
           </Button>
         </form>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <Separator className="w-full" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <Button variant="outline" type="button" className="w-full" disabled={isLoading}>
-          {isLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Icons.google className="mr-2 h-4 w-4" />
-          )}
-          Sign up with Google
-        </Button>
 
         <p className="text-center text-sm text-muted-foreground">
           <Link

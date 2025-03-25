@@ -39,12 +39,17 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8080/auth/login', {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(
+          {
+            email: formData.email,
+            password: formData.password,
+          }
+        ),
       });
 
       const data = await response.json();

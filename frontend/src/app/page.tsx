@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from 'next/navigation'
 import { Post } from '@/lib/type';
+import { cn } from '@/lib/utils';
 
 
 
@@ -28,6 +29,9 @@ export default function HomePage() {
   const { user, logout } = useAuth();
   const router = useRouter();
   const [items, setItems] = useState<Post[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [hasSearchResults, setHasSearchResults] = useState(false);
 
   const fetchPosts = async() => {
     const url = new URL('http://localhost:8080/api/posts/get-posts');
@@ -46,6 +50,37 @@ export default function HomePage() {
       throw new Error(data.error || 'Failed to create post');
     }
   }
+
+  const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    
+    const query = e.currentTarget.value.trim();
+    if (!query) {
+      fetchPosts();
+      setHasSearchResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const url = new URL('http://localhost:8080/api/posts/search');
+      url.searchParams.append('query', query);
+
+      const response = await fetch(url.toString());
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Search failed');
+      }
+
+      setItems(data);
+      setHasSearchResults(true);
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   useEffect(()=>{
     fetchPosts()
@@ -70,17 +105,20 @@ export default function HomePage() {
             />
           </Link>
           <div className="relative w-full max-w-sm mx-4">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder="Search items..." className="w-full pl-8" />
+            <Search className={cn(
+              "absolute left-2.5 top-2.5 h-4 w-4",
+              isSearching ? "animate-spin" : "text-muted-foreground"
+            )} />
+            <Input 
+              type="search" 
+              placeholder="Search items..." 
+              className="w-full pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
+            />
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/search">
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Search className="h-5 w-5" />
-                <span className="sr-only">Search</span>
-              </Button>
-            </Link>
-            
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -112,54 +150,56 @@ export default function HomePage() {
         </div>
       </header>
       <main className="flex-1">
-        <section className="py-6 md:py-10 max-w-7xl mx-auto px-4">
-          <div className="grid gap-6">
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight">Discover</h1>
-              <p className="text-gray-500">
-                Real Opinions, Real UNSW Experience, Real Rankings
-              </p>
+        {!hasSearchResults && (
+          <section className="py-6 md:py-10 max-w-7xl mx-auto px-4">
+            <div className="grid gap-6">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tight">Discover</h1>
+                <p className="text-gray-500">
+                  Real Opinions, Real UNSW Experience, Real Rankings
+                </p>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <CategoryCard 
+                  name="All" 
+                  icon="layout-grid"
+                  isSelected={selectedCategory === "All"}
+                  onClick={() => setSelectedCategory("All")}
+                />
+                <CategoryCard 
+                  name="Course" 
+                  icon="course"
+                  isSelected={selectedCategory === "Course"}
+                  onClick={() => setSelectedCategory("Course")}
+                />
+                <CategoryCard 
+                  name="Restaurant" 
+                  icon="restaurant"
+                  isSelected={selectedCategory === "Restaurant"}
+                  onClick={() => setSelectedCategory("Restaurant")}
+                />
+                <CategoryCard 
+                  name="Building" 
+                  icon="building"
+                  isSelected={selectedCategory === "Building"}
+                  onClick={() => setSelectedCategory("Building")}
+                />
+                <CategoryCard 
+                  name="Toilet" 
+                  icon="toilet"
+                  isSelected={selectedCategory === "Toilet"}
+                  onClick={() => setSelectedCategory("Toilet")}
+                />
+                <CategoryCard
+                  name="Other" 
+                  icon="other"
+                  isSelected={selectedCategory === "Other"}
+                  onClick={() => setSelectedCategory("Other")}
+                />
+              </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              <CategoryCard 
-                name="All" 
-                icon="layout-grid"
-                isSelected={selectedCategory === "All"}
-                onClick={() => setSelectedCategory("All")}
-              />
-              <CategoryCard 
-                name="Course" 
-                icon="course"
-                isSelected={selectedCategory === "Course"}
-                onClick={() => setSelectedCategory("Course")}
-              />
-              <CategoryCard 
-                name="Restaurant" 
-                icon="restaurant"
-                isSelected={selectedCategory === "Restaurant"}
-                onClick={() => setSelectedCategory("Restaurant")}
-              />
-              <CategoryCard 
-                name="Building" 
-                icon="building"
-                isSelected={selectedCategory === "Building"}
-                onClick={() => setSelectedCategory("Building")}
-              />
-              <CategoryCard 
-                name="Toilet" 
-                icon="toilet"
-                isSelected={selectedCategory === "Toilet"}
-                onClick={() => setSelectedCategory("Toilet")}
-              />
-              <CategoryCard 
-                name="Other" 
-                icon="other"
-                isSelected={selectedCategory === "Other"}
-                onClick={() => setSelectedCategory("Other")}
-              />
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section className="py-6 max-w-7xl mx-auto px-4">
           <div className="space-y-6">
