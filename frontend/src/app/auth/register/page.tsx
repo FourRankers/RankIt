@@ -79,9 +79,10 @@ export default function RegisterPage() {
           <Image 
             src="/logo.png" 
             alt="RankIt Logo" 
-            width={160}
-            height={90}
-            className="h-8 w-auto"
+            width={400}
+            height={220}
+            className="h-20 w-auto"
+            priority
           />
         </Link>
       </div>
