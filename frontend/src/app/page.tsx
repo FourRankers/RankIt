@@ -32,11 +32,10 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearchResults, setHasSearchResults] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchPosts = async() => {
     const url = new URL('http://localhost:8080/api/posts/get-posts');
-    url.searchParams.append('limit', '10');
-
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
@@ -50,6 +49,25 @@ export default function HomePage() {
       throw new Error(data.error || 'Failed to create post');
     }
   }
+
+  const fetchPostsByCategory = async (category: string) => {
+    setIsLoading(true);
+    try {
+      const url = new URL(`http://localhost:8080/api/posts/category/${category}`);
+      const response = await fetch(url.toString());
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch category posts');
+      }
+
+      setItems(data);
+    } catch (error) {
+      console.error('Category fetch error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
@@ -89,6 +107,15 @@ export default function HomePage() {
   const handleLogout = () => {
     logout();
     router.push('/auth/login');
+  };
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+    if (category === 'All') {
+      fetchPosts();
+    } else {
+      fetchPostsByCategory(category.toLowerCase());
+    }
   };
 
   return (
@@ -164,37 +191,37 @@ export default function HomePage() {
                   name="All" 
                   icon="layout-grid"
                   isSelected={selectedCategory === "All"}
-                  onClick={() => setSelectedCategory("All")}
+                  onClick={() => handleCategoryClick("All")}
                 />
                 <CategoryCard 
                   name="Course" 
                   icon="course"
                   isSelected={selectedCategory === "Course"}
-                  onClick={() => setSelectedCategory("Course")}
+                  onClick={() => handleCategoryClick("Course")}
                 />
                 <CategoryCard 
                   name="Restaurant" 
                   icon="restaurant"
                   isSelected={selectedCategory === "Restaurant"}
-                  onClick={() => setSelectedCategory("Restaurant")}
+                  onClick={() => handleCategoryClick("Restaurant")}
                 />
                 <CategoryCard 
                   name="Building" 
                   icon="building"
                   isSelected={selectedCategory === "Building"}
-                  onClick={() => setSelectedCategory("Building")}
+                  onClick={() => handleCategoryClick("Building")}
                 />
                 <CategoryCard 
                   name="Toilet" 
                   icon="toilet"
                   isSelected={selectedCategory === "Toilet"}
-                  onClick={() => setSelectedCategory("Toilet")}
+                  onClick={() => handleCategoryClick("Toilet")}
                 />
                 <CategoryCard
                   name="Other" 
                   icon="other"
                   isSelected={selectedCategory === "Other"}
-                  onClick={() => setSelectedCategory("Other")}
+                  onClick={() => handleCategoryClick("Other")}
                 />
               </div>
             </div>
@@ -205,14 +232,17 @@ export default function HomePage() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold tracking-tight">Popular Items</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {items.map(item => (
-                <div key={item.id}>
-                  <ItemCard {...item} />
+              {isLoading ? (
+                <div className="col-span-full flex justify-center">
+                  <Search className="h-8 w-8 animate-spin" />
                 </div>
-              ))}
-            </div>
-            <div className="flex justify-center">
-              <Button variant="outline">Load more</Button>
+              ) : (
+                items.map(item => (
+                  <div key={item.id}>
+                    <ItemCard {...item} />
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </section>
