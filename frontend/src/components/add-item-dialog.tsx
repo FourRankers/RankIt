@@ -27,9 +27,40 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
   const [rating, setRating] = useState(0);
   const [image, setImage] = useState<File | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+    //   const fetchItems = async () => {
+  //     try {
+  //       const response = await fetch('http://localhost:8080/add-listing', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({
+  //           name:'test-rank',
+  //           imageSrc:'',
+  //           rating: 1,
+  //           description: '',
+  //           category:''
+  //         }),
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+
+  //       const data = await response.json();
+  //       setItems(data);
+  //     } catch (err) {
+  //       setError(err.message);
+  //       console.error('Failed to fetch items:', err);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Handle form submission
+    // await fetchItems()
     onOpenChange(false);
   };
 

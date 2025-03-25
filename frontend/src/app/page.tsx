@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from "next/link"
 import { Search, Plus } from "lucide-react"
 import Image from "next/image"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CategoryCard } from "@/components/category-card"
@@ -14,38 +13,6 @@ import { AddItemDialog } from '@/components/add-item-dialog'
 export default function HomePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>("All");
-
-  // useEffect(() => {
-  //   const fetchItems = async () => {
-  //     try {
-  //       const response = await fetch('http://localhost:8080/add-listing', {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({
-  //           title:'test-rank',
-  //           price:10000,
-  //           location:'UNSW'
-  //         }),
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-
-  //       const data = await response.json();
-  //       setItems(data);
-  //     } catch (err) {
-  //       setError(err.message);
-  //       console.error('Failed to fetch items:', err);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchItems();
-  // }, []);
 
   const items = [
     {

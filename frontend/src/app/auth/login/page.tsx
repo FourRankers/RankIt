@@ -3,26 +3,62 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from "next/image"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Icons } from '@/components/icons';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+
+interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: '',
+    password: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // TODO: Implement login logic
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+
+      localStorage.setItem('uid', data.uid);
+      
+      toast.success('Login successful');
       router.push('/');
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
+      toast.error(error instanceof Error ? error.message : 'Login failed, please try again');
     } finally {
       setIsLoading(false);
     }
@@ -31,12 +67,22 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center relative bg-muted/50">
       <div className="absolute top-4 left-4">
-        <Link href="/" className="font-bold text-xl font-orbitron">
-          RankIt
+        <Link href="/" className="flex items-center" aria-label="RankIt Home">
+          <Image 
+            src="/logo.png" 
+            alt="RankIt Logo" 
+            width={160}
+            height={90}
+            className="h-8 w-auto"
+          />
         </Link>
       </div>
       
-      <div className={`w-full max-w-[400px] p-8 space-y-6 bg-background rounded-lg border shadow-lg mx-4 transition-opacity duration-200 ${isLoading ? 'opacity-50' : ''}`}>
+      <div className={cn(
+        "w-full max-w-[400px] p-8 space-y-6 bg-background rounded-lg border shadow-lg mx-4",
+        "transition-opacity duration-200",
+        isLoading && "opacity-50"
+      )}>
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">
             Welcome back
@@ -48,15 +94,18 @@ export default function LoginPage() {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="username"
-              placeholder="Enter your username"
-              type="text"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              type="email"
               autoCapitalize="none"
-              autoComplete="username"
+              autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
+              value={formData.email}
+              onChange={handleChange}
               required
             />
           </div>
@@ -64,10 +113,13 @@ export default function LoginPage() {
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              name="password"
               placeholder="Enter your password"
               type="password"
               autoComplete="current-password"
               disabled={isLoading}
+              value={formData.password}
+              onChange={handleChange}
               required
             />
           </div>
@@ -100,7 +152,7 @@ export default function LoginPage() {
           ) : (
             <Icons.google className="mr-2 h-4 w-4" />
           )}
-          Google
+          Sign in with Google
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">
