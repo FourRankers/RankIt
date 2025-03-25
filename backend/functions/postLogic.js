@@ -17,7 +17,7 @@ class PostLogic {
         const commentsAverage = commentRatings.reduce((sum, rating) => sum + rating, 0) / commentRatings.length;
         
         // Return average of author rating and comments average (equal weight)
-        return (authorRating + commentsAverage) / 2;
+        return Math.round((authorRating + commentsAverage) / 2 * 10) / 10;
     }
 
     // Create a new post
