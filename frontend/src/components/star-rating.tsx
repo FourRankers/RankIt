@@ -21,9 +21,9 @@ export const StarRating = ({
 }: StarRatingProps) => {
   const [hoverRating, setHoverRating] = useState(0);
 
-  const handleClick = (starNumber: number, isHalf: boolean) => {
+  const handleClick = (starNumber: number) => {
     if (!readonly && onRatingChange) {
-      onRatingChange(starNumber - (isHalf ? 0.5 : 0));
+      onRatingChange(starNumber);
     }
   };
 
@@ -31,8 +31,10 @@ export const StarRating = ({
     <div className="flex">
       {[...Array(5)].map((_, i) => {
         const starNumber = i + 1;
-        const fullStarThreshold = starNumber - 0.5;
         const displayRating = hoverRating || rating;
+        const showHalfStar = readonly && 
+          displayRating > (starNumber - 1) && 
+          displayRating < starNumber;
         
         return (
           <div 
@@ -53,16 +55,15 @@ export const StarRating = ({
               )} />
               
               {/* Half Star */}
-              <div 
-                className="absolute overflow-hidden"
-                style={{ width: displayRating >= fullStarThreshold ? '50%' : '0%' }}
-              >
-                <StarHalf className={cn(
-                  `h-${size} w-${size}`,
-                  "fill-primary text-primary",
-                  className
-                )} />
-              </div>
+              {showHalfStar && (
+                <div className="absolute overflow-hidden w-1/2">
+                  <StarHalf className={cn(
+                    `h-${size} w-${size}`,
+                    "fill-primary text-primary",
+                    className
+                  )} />
+                </div>
+              )}
 
               {/* Full Star */}
               <div 
@@ -79,18 +80,11 @@ export const StarRating = ({
 
             {/* Click Areas */}
             {!readonly && (
-              <>
-                <button
-                  className="absolute left-0 inset-y-0 w-1/2"
-                  onClick={() => handleClick(starNumber, true)}
-                  aria-label={`Rate ${starNumber - 0.5} stars`}
-                />
-                <button
-                  className="absolute right-0 inset-y-0 w-1/2"
-                  onClick={() => handleClick(starNumber, false)}
-                  aria-label={`Rate ${starNumber} stars`}
-                />
-              </>
+              <button
+                className="absolute inset-0"
+                onClick={() => handleClick(starNumber)}
+                aria-label={`Rate ${starNumber} stars`}
+              />
             )}
           </div>
         );

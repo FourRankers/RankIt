@@ -30,7 +30,11 @@ export const ReviewForm = ({ itemId, onCancel, onSuccess }: ReviewFormProps) => 
     try {
       const response = await fetch('http://localhost:8080/api/posts/add-comment', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.uid}`,
+          'userId': user.uid
+        },
         body: JSON.stringify({
           postId: itemId,
           content: content.trim(),
