@@ -1,0 +1,75 @@
+### Test server connection
+GET http://localhost:3000/api/posts
+
+### Create a new post with author rating
+POST http://localhost:3000/api/posts/create-post
+Content-Type: application/json
+
+{
+  "title": "Rating Test Post",
+  "description": "Testing the rating system",
+  "authorId": "user123",
+  "authorName": "John Doe",
+  "imageUrl": "https://test.jpg",
+  "category": "miscellaneous",
+  "authorRating": 5
+}
+
+### Get all posts (with pagination)
+GET http://localhost:3000/api/posts/get-posts?limit=10
+
+### Get a specific post with its ratings and comments
+GET http://localhost:3000/api/posts/get-post/DKDwX7coP6X3Jzlrxhbe
+
+### Get initial post rating
+GET http://localhost:3000/api/posts/get-rating/DKDwX7coP6X3Jzlrxhbe
+
+### Add first comment with rating
+POST http://localhost:3000/api/posts/add-comment
+Content-Type: application/json
+
+{
+  "postId": "DKDwX7coP6X3Jzlrxhbe",
+  "content": "First comment rating",
+  "authorId": "user456",
+  "authorName": "Jane Smith",
+  "rating": 1
+}
+
+### Check rating after first comment
+GET http://localhost:3000/api/posts/get-rating/DKDwX7coP6X3Jzlrxhbe
+
+### Add second comment with rating
+POST http://localhost:3000/api/posts/add-comment
+Content-Type: application/json
+
+{
+  "postId": "DKDwX7coP6X3Jzlrxhbe",
+  "content": "Second comment rating",
+  "authorId": "user789",
+  "authorName": "Bob Wilson",
+  "rating": 3
+}
+
+### Check final rating
+GET http://localhost:3000/api/posts/get-rating/DKDwX7coP6X3Jzlrxhbe
+
+### Upvote a comment
+POST http://localhost:3000/api/posts/upvote-comment/DKDwX7coP6X3Jzlrxhbe/COMMENT_ID
+Content-Type: application/json
+
+{
+  "userId": "user123"
+}
+
+### Get posts by category
+GET http://localhost:3000/api/posts/category/miscellaneous
+
+### Get posts by category with pagination
+GET http://localhost:3000/api/posts/category/miscellaneous?limit=5&lastPostId=DKDwX7coP6X3Jzlrxhbe
+
+### Search posts by title
+GET http://localhost:3000/api/posts/search?query=quad
+
+### Search posts by title with pagination
+GET http://localhost:3000/api/posts/search?query=Rating&limit=5&lastPostId=DKDwX7coP6X3Jzlrxhbe

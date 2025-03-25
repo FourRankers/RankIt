@@ -1,0 +1,282 @@
+### Test User Endpoints
+
+### 1. Get all posts by a specific user
+GET http://localhost:3000/api/users/123/posts
+
+### 2. Get all comments by a specific user
+GET http://localhost:3000/api/users/123/comments
+
+### 3. Get user's vote history for posts
+GET http://localhost:3000/api/users/123/post-votes
+
+### 4. Get user's vote history for comments
+GET http://localhost:3000/api/users/123/comment-votes
+
+### Authentication Tests
+
+### 1. Create a test user first
+POST http://localhost:3000/api/auth/signup
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "hashedpass123"
+}
+
+### 2. Login with correct credentials
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "hashedpass123"
+}
+
+### 3. Login with wrong password
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "wrongpassword123"
+}
+
+### 4. Login with non-existent email
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "nonexistent@example.com",
+    "password": "hashedpass123"
+}
+
+### 5. Login with missing password
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com"
+}
+
+### 6. Login with missing email
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "password": "hashedpass123"
+}
+
+# Expected Responses:
+# 1. Success (201) - Returns user id and email
+# 2. Success (200) - Returns user id, email, and success message
+# 3. Error (401) - "Invalid credentials"
+# 4. Error (401) - "Invalid credentials"
+# 5. Error (400) - "Email and password are required"
+# 6. Error (400) - "Email and password are required"
+
+# Testing Steps:
+# 1. Run test #1 first to create a test user
+# 2. Then run tests #2-6 to test different login scenarios
+# 3. Each test is independent and can be run separately
+# 4. Check the response status and message for each test
+
+### Protected Route Tests
+
+### 10. Create post with valid userId
+POST http://localhost:3000/api/posts/create-post
+Content-Type: application/json
+userId: PASTE_USER_ID_HERE
+
+{
+    "title": "Test Post",
+    "description": "Testing with auth",
+    "imageUrl": "https://test.jpg",
+    "category": "test",
+    "authorRating": 5
+}
+
+### 11. Create post without userId
+POST http://localhost:3000/api/posts/create-post
+Content-Type: application/json
+
+{
+    "title": "Test Post",
+    "description": "This should fail",
+    "imageUrl": "https://test.jpg",
+    "category": "test",
+    "authorRating": 5
+}
+
+### 12. Create post with invalid userId
+POST http://localhost:3000/api/posts/create-post
+Content-Type: application/json
+userId: invalid_user_id
+
+{
+    "title": "Test Post",
+    "description": "This should fail",
+    "imageUrl": "https://test.jpg",
+    "category": "test",
+    "authorRating": 5
+}
+
+### 13. Add comment with valid userId
+POST http://localhost:3000/api/posts/add-comment
+Content-Type: application/json
+userId: PASTE_USER_ID_HERE
+
+{
+    "postId": "PASTE_POST_ID_HERE",
+    "content": "Test comment",
+    "rating": 4
+}
+
+### 14. Add comment without userId
+POST http://localhost:3000/api/posts/add-comment
+Content-Type: application/json
+
+{
+    "postId": "PASTE_POST_ID_HERE",
+    "content": "This should fail",
+    "rating": 4
+}
+
+### Public Route Tests
+
+### 15. Get all posts (no auth required)
+GET http://localhost:3000/api/posts/get-posts
+
+### 16. Get specific post (no auth required)
+GET http://localhost:3000/api/posts/get-post/PASTE_POST_ID_HERE
+
+### Notes:
+# Expected Responses:
+# Authentication:
+# 1. Success (201) - Returns user id and email
+# 2. Error (400) - "Email already registered"
+# 3. Success (200) - Returns user id and email
+# 4. Error (401) - "Invalid credentials"
+# 5. Error (401) - "Invalid credentials"
+# 6. Error (400) - "Email and password are required"
+
+# Protected Routes:
+# 10. Success (201) - Post created successfully
+# 11. Error (401) - "No user ID provided"
+# 12. Error (401) - "Invalid user ID"
+# 13. Success (201) - Comment added successfully
+# 14. Error (401) - "No user ID provided"
+
+# Public Routes:
+# 15. Success (200) - Returns array of posts
+# 16. Success (200) - Returns single post with details
+
+# Testing Steps:
+# 1. Run test #1 to create a user
+# 2. Copy the user ID from the response
+# 3. Replace PASTE_USER_ID_HERE with the copied user ID
+# 4. Run test #10 to create a post
+# 5. Copy the post ID from the response
+# 6. Replace PASTE_POST_ID_HERE with the copied post ID
+# 7. Run remaining tests
+
+# Note: Make sure to replace:
+# - PASTE_USER_ID_HERE with actual user ID from signup/login response
+# - PASTE_POST_ID_HERE with actual post ID from create post response
+
+# Notes:
+# Expected responses:
+# 1. Success (200) with user data
+# 2. Error (401) - Token expired
+# 3. Error (401) - Invalid token format
+# 4. Error (400) - Missing token
+# 5. Error (401) - No authorization header
+# 6. Error (401) - Invalid token
+# 7. Error (401) - Token expired
+# 8. Success (200) with user's posts
+# 9. Error (401) - No authorization
+# 10. Error (401) - Invalid token
+# 11. Error (401) - No authorization
+# 12. Error (401) - Invalid token
+
+# To use this test file:
+# 1. Replace VALID_FIREBASE_ID_TOKEN with a real Firebase ID token
+# 2. EXPIRED_TOKEN_HERE should be a previously valid token that has expired
+# 3. INVALID_TOKEN_HERE can be any malformed token
+# 4. Replace POST_ID with an actual post ID from your database
+
+# Note: Firebase ID tokens typically expire after 1 hour
+
+### Test User Voting System
+
+### 1. First time voting on a comment (set to 5 votes)
+POST http://localhost:3000/api/users/USER_ID/vote-comment/POST_ID/COMMENT_ID
+Content-Type: application/json
+
+{
+    "vote": 5
+}
+
+### 2. Update vote count on same comment (change to 3 votes)
+POST http://localhost:3000/api/users/USER_ID/vote-comment/POST_ID/COMMENT_ID
+Content-Type: application/json
+
+{
+    "vote": 3
+}
+
+### 3. Set vote count to 0
+POST http://localhost:3000/api/users/USER_ID/vote-comment/POST_ID/COMMENT_ID
+Content-Type: application/json
+
+{
+    "vote": 0
+}
+
+### 4. Try invalid vote value (negative number)
+POST http://localhost:3000/api/users/USER_ID/vote-comment/POST_ID/COMMENT_ID
+Content-Type: application/json
+
+{
+    "vote": -1
+}
+
+### 5. Get user's comment vote history
+GET http://localhost:3000/api/users/USER_ID/comment-votes
+
+### 6. Try voting on non-existent comment
+POST http://localhost:3000/api/users/USER_ID/vote-comment/POST_ID/nonexistent_comment
+Content-Type: application/json
+
+{
+    "vote": 5
+}
+
+### 7. Try voting on non-existent post
+POST http://localhost:3000/api/users/USER_ID/vote-comment/nonexistent_post/COMMENT_ID
+Content-Type: application/json
+
+{
+    "vote": 5
+}
+
+# Expected Responses:
+# 1. Success (200) - Returns { message: "Vote recorded successfully", currentVotes: 5 }
+# 2. Success (200) - Returns { message: "Vote updated successfully", currentVotes: 3 }
+# 3. Success (200) - Returns { message: "Vote count updated successfully", currentVotes: 0 }
+# 4. Error (400) - Returns { error: "Invalid vote value" }
+# 5. Success (200) - Returns array of user's votes with postId, commentId, and vote count
+# 6. Error (404) - Returns { error: "Comment not found" }
+# 7. Error (404) - Returns { error: "Post not found" }
+
+# Testing Steps:
+# 1. Replace USER_ID with an actual user ID
+# 2. Replace POST_ID with an actual post ID
+# 3. Replace COMMENT_ID with an actual comment ID
+# 4. Run tests in sequence to see how the vote count changes
+# 5. Check the vote history after making various votes
+
+# Note: Make sure to have:
+# - A valid user account
+# - An existing post
+# - An existing comment on that post
+# before running these tests 

@@ -210,6 +210,64 @@ class PostLogic {
             upvotes: admin.firestore.FieldValue.increment(1)
         });
     }
+
+    // Get posts by category with pagination
+    static async getPostsByCategory(category, limit = 10, lastPostId = null) {
+        if (!category) {
+            throw new Error("Category is required");
+        }
+
+        let query = db.collection("posts")
+            .where("category", "==", category)
+            .orderBy("timestamp", "desc")
+            .limit(parseInt(limit));
+
+        if (lastPostId) {
+            const lastPost = await db.collection("posts").doc(lastPostId).get();
+            query = query.startAfter(lastPost);
+        }
+
+        const postsSnapshot = await query.get();
+        return postsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            averageRating: doc.data().averageRating || 0,
+            totalRatings: (doc.data().commentRatings || []).length + 1 // +1 for author rating
+        }));
+    }
+
+    // Search posts by title with pagination
+    static async searchPostsByTitle(searchText, limit = 10, lastPostId = null) {
+        if (!searchText) {
+            throw new Error("Search text is required");
+        }
+
+        // Convert to lowercase for case-insensitive search
+        const searchLower = searchText.toLowerCase();
+        
+        let query = db.collection("posts")
+            .orderBy("timestamp", "desc")
+            .limit(parseInt(limit));
+
+        if (lastPostId) {
+            const lastPost = await db.collection("posts").doc(lastPostId).get();
+            query = query.startAfter(lastPost);
+        }
+
+        const postsSnapshot = await query.get();
+        
+        // Filter posts where title contains the search text (case insensitive)
+        const filteredPosts = postsSnapshot.docs
+            .filter(doc => doc.data().title.toLowerCase().includes(searchLower))
+            .map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                averageRating: doc.data().averageRating || 0,
+                totalRatings: (doc.data().commentRatings || []).length + 1
+            }));
+
+        return filteredPosts;
+    }
 }
 
 module.exports = PostLogic;

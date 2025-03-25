@@ -33,9 +33,3 @@ build/
 
 npm package-lock (optional, uncomment if desired)
 package-lock.json
-
-# Firebase Private Key
-firebase-private-key.json
-
-# Test HTTP
-tests

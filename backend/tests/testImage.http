@@ -1,0 +1,28 @@
+### Test server is running
+GET http://localhost:3000/api/posts/get-posts
+
+### Test get image
+GET http://localhost:3000/api/posts/get-image/test-d967113f-d3a2-455f-998b-fb5d03ebbbe2.jpeg
+
+### Test image upload
+POST http://localhost:3000/api/posts/upload-image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="logo.jpg"
+Content-Type: image/jpeg
+
+< logo.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Test create post (with image URL from previous upload)
+POST http://localhost:3000/api/posts/create-post
+Content-Type: application/json
+
+{
+  "title": "Test Post with Image",
+  "description": "This is a test post with an image",
+  "authorId": "test-user-123",
+  "authorName": "Test User",
+  "imageUrl": "https://tirzchadpzbxjacbbcsw.supabase.co/storage/v1/object/public/rankit-images/posts/test-d967113f-d3a2-455f-998b-fb5d03ebbbe2.jpeg"
+} 

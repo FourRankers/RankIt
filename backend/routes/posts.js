@@ -249,4 +249,32 @@ router.post("/:postId/comments/:commentId/vote", async (req, res) => {
   }
 });
 
+// Get posts by category
+router.get("/category/:category", async (req, res) => {
+    try {
+        const { category } = req.params;
+        const { limit, lastPostId } = req.query;
+        const posts = await PostLogic.getPostsByCategory(category, limit, lastPostId);
+        res.status(200).json(posts);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Search posts by title
+router.get("/search", async (req, res) => {
+    try {
+        const { query, limit, lastPostId } = req.query;
+        
+        if (!query) {
+            return res.status(400).json({ error: "Search query is required" });
+        }
+
+        const posts = await PostLogic.searchPostsByTitle(query, limit, lastPostId);
+        res.status(200).json(posts);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;
