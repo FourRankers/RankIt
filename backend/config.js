@@ -1,6 +1,8 @@
 require("dotenv").config();
 const admin = require("firebase-admin");
+const { createClient } = require("@supabase/supabase-js");
 
+// Firebase Configuration
 if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_PRIVATE_KEY || !process.env.FIREBASE_CLIENT_EMAIL) {
   throw new Error("Missing Firebase environment variables.");
 }
@@ -21,6 +23,21 @@ try {
   throw error;
 }
 
+// Supabase Configuration
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+  throw new Error("Missing Supabase environment variables.");
+}
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
+
+console.log("Supabase client initialized successfully");
+
 const db = admin.firestore();
 
-module.exports = db;
+module.exports = {
+  db,
+  supabase
+};
