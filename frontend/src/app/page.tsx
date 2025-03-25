@@ -4,48 +4,26 @@ import { useState } from 'react';
 import Link from "next/link"
 import { Search, Plus } from "lucide-react"
 import Image from "next/image"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CategoryCard } from "@/components/category-card"
 import { ItemCard } from "@/components/item-card"
 import { AddItemDialog } from '@/components/add-item-dialog'
+import { useAuth } from '@/contexts/auth-context'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu"
+import { useRouter } from 'next/navigation'
 
 export default function HomePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>("All");
-
-  // useEffect(() => {
-  //   const fetchItems = async () => {
-  //     try {
-  //       const response = await fetch('http://localhost:8080/add-listing', {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({
-  //           title:'test-rank',
-  //           price:10000,
-  //           location:'UNSW'
-  //         }),
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-
-  //       const data = await response.json();
-  //       setItems(data);
-  //     } catch (err) {
-  //       setError(err.message);
-  //       console.error('Failed to fetch items:', err);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchItems();
-  // }, []);
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
   const items = [
     {
@@ -57,6 +35,11 @@ export default function HomePage() {
       image: "/default.jpg"
     },
   ]
+
+  const handleLogout = () => {
+    logout();
+    router.push('/auth/login');
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -82,14 +65,35 @@ export default function HomePage() {
                 <span className="sr-only">Search</span>
               </Button>
             </Link>
-            <Link href="/auth/login">
-              <Button variant="outline" size="sm" className="hidden md:inline-flex">
-                Log in
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button size="sm">Sign up</Button>
-            </Link>
+            
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="/avatars/default.png" alt="User avatar" />
+                      <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleLogout}>
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link href="/auth/login">
+                  <Button variant="outline" size="sm" className="hidden md:inline-flex">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button size="sm">Sign up</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>

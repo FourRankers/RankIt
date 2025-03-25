@@ -3,26 +3,74 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from "next/image";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Icons } from '@/components/icons';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { hashPassword } from '@/lib/crypto';
+
+interface RegisterFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<RegisterFormData>({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // TODO: Implement register logic
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      router.push('/');
+      const hashedPassword = await hashPassword(formData.password);
+      
+      const response = await fetch('http://localhost:8080/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: hashedPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed');
+      }
+
+      toast.success('Registration successful');
+      router.push('/auth/login');
     } catch (error) {
-      console.error(error);
+      console.error('Registration error:', error);
+      toast.error(error instanceof Error ? error.message : 'Registration failed, please try again');
     } finally {
       setIsLoading(false);
     }
@@ -31,12 +79,22 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center relative bg-muted/50">
       <div className="absolute top-4 left-4">
-        <Link href="/" className="font-bold text-xl font-orbitron">
-          RankIt
+        <Link href="/" className="flex items-center" aria-label="RankIt Home">
+          <Image 
+            src="/logo.png" 
+            alt="RankIt Logo" 
+            width={160}
+            height={90}
+            className="h-8 w-auto"
+          />
         </Link>
       </div>
       
-      <div className={`w-full max-w-[400px] p-8 space-y-6 bg-background rounded-lg border shadow-lg mx-4 transition-opacity duration-200 ${isLoading ? 'opacity-50' : ''}`}>
+      <div className={cn(
+        "w-full max-w-[400px] p-8 space-y-6 bg-background rounded-lg border shadow-lg mx-4",
+        "transition-opacity duration-200",
+        isLoading && "opacity-50"
+      )}>
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">
             Create an account
@@ -48,15 +106,18 @@ export default function RegisterPage() {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="username"
-              placeholder="Choose a username"
-              type="text"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              type="email"
               autoCapitalize="none"
-              autoComplete="username"
+              autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
+              value={formData.email}
+              onChange={handleChange}
               required
             />
           </div>
@@ -64,10 +125,13 @@ export default function RegisterPage() {
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              name="password"
               placeholder="Create a password"
               type="password"
               autoComplete="new-password"
               disabled={isLoading}
+              value={formData.password}
+              onChange={handleChange}
               required
             />
           </div>
@@ -75,10 +139,13 @@ export default function RegisterPage() {
             <Label htmlFor="confirmPassword">Confirm Password</Label>
             <Input
               id="confirmPassword"
+              name="confirmPassword"
               placeholder="Confirm your password"
               type="password"
               autoComplete="new-password"
               disabled={isLoading}
+              value={formData.confirmPassword}
+              onChange={handleChange}
               required
             />
           </div>
@@ -111,7 +178,7 @@ export default function RegisterPage() {
           ) : (
             <Icons.google className="mr-2 h-4 w-4" />
           )}
-          Google
+          Sign up with Google
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">
