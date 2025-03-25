@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { StarRating } from "./star-rating"
 import { Post } from "@/lib/type"
 import { useState } from "react"
+import { formatDate } from "@/lib/utils"
 
 export const ItemCard = ({
   id,
@@ -20,6 +21,10 @@ export const ItemCard = ({
   const handleError = () => {
     setImage('/default.jpg')
   }
+
+  const formattedDate = timestamp?._seconds 
+    ? formatDate(new Date(timestamp._seconds * 1000))
+    : '';
 
   return (
     <div 
@@ -42,13 +47,7 @@ export const ItemCard = ({
       <div className="space-y-2">
         <div className="text-sm text-muted-foreground flex justify-between">
           <span>{category}</span>
-          <span>
-            {new Date((timestamp?._seconds || 0) * 1000).toLocaleDateString(undefined, {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit'
-            })}
-          </span>
+          <span>{formattedDate}</span>
         </div>
         <div className="font-semibold line-clamp-2">{title}</div>
         <div className="flex items-center gap-2">
