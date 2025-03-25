@@ -79,11 +79,12 @@ export const AddItemDialog = ({ open, onOpenChange, onSuccess }: AddItemDialogPr
     setIsLoading(true);
 
     try {
-      console.log(user);
       const response = await fetch('http://localhost:8080/api/posts/create-post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.uid}`,
+          'userId': user.uid
         },
         body: JSON.stringify({
           title: formData.title,
@@ -167,7 +168,8 @@ export const AddItemDialog = ({ open, onOpenChange, onSuccess }: AddItemDialogPr
               value={formData.description}
               onChange={handleChange}
               placeholder="Describe this item..."
-              className="min-h-[100px]"
+              className="max-h-32 overflow-y-auto"
+              rows={5}
               disabled={isLoading}
               required
             />

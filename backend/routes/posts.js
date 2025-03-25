@@ -12,7 +12,7 @@ const storage = multer.memoryStorage()
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
+    fileSize: 10 * 1024 * 1024 // 5MB limit
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
@@ -246,31 +246,35 @@ router.post('/:postId/comments/:commentId/vote', async (req, res) => {
 })
 
 // Get posts by category
-router.get("/category/:category", async (req, res) => {
-    try {
-        const { category } = req.params;
-        const { limit, lastPostId } = req.query;
-        const posts = await PostLogic.getPostsByCategory(category, limit, lastPostId);
-        res.status(200).json(posts);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+router.get('/category/:category', async (req, res) => {
+  try {
+    const { category } = req.params
+    const { limit, lastPostId } = req.query
+    const posts = await PostLogic.getPostsByCategory(
+      category,
+      limit,
+      lastPostId
+    )
+    res.status(200).json(posts)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
 
 // Search posts by title
-router.get("/search", async (req, res) => {
-    try {
-        const { query, limit, lastPostId } = req.query;
-        
-        if (!query) {
-            return res.status(400).json({ error: "Search query is required" });
-        }
+router.get('/search', async (req, res) => {
+  try {
+    const { query, limit, lastPostId } = req.query
 
-        const posts = await PostLogic.searchPostsByTitle(query, limit, lastPostId);
-        res.status(200).json(posts);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    if (!query) {
+      return res.status(400).json({ error: 'Search query is required' })
     }
-});
 
-module.exports = router;
+    const posts = await PostLogic.searchPostsByTitle(query, limit, lastPostId)
+    res.status(200).json(posts)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+module.exports = router
