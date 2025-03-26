@@ -14,7 +14,7 @@ Rank It is a website designed for UNSW students to rank and review courses, bath
 
 ![ezgif-43ea8838d13952](https://github.com/user-attachments/assets/db856ac4-655f-4e9e-844a-df5b6c8fabbb)
 
-![chrome_1o1L6kx5Vq](https://github.com/user-attachments/assets/e871a3a6-d3a1-491d-ac0c-4976ced82b74)
+![ezgif-43149e6812c66f](https://github.com/user-attachments/assets/5e993701-5aa4-4410-9aae-fa3c71b74cb7)
 
 ## Getting Started
 
