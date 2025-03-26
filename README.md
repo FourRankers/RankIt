@@ -10,7 +10,7 @@ Rank It is a website designed for UNSW students to rank and review courses, bath
 - Like or dislike a post 
 - Comment and reply on existing posts
   
-![chrome_WGmRVHAAen-ezgif com-optimize](https://github.com/user-attachments/assets/c9fcebf5-b174-44cd-8869-3a215dfb1dc5)
+![ezgif-481c843b554ca6](https://github.com/user-attachments/assets/0e7a8b9c-6ef9-443d-9d73-5a3a28a4029d)
 
 ![ezgif-43ea8838d13952](https://github.com/user-attachments/assets/db856ac4-655f-4e9e-844a-df5b6c8fabbb)
 
