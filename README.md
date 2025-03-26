@@ -32,8 +32,6 @@ Second, run the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
 ### Backend
 
 Enter the backend directory and install all the dependencies:
@@ -47,6 +45,8 @@ Second, run the server:
 ```bash
 npm run serve
 ```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 Make sure you have a valid .env file to setup the firebase and supabase databases:
 ```
