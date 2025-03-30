@@ -3,6 +3,8 @@
 
 Rank It is a website designed for UNSW students to rank and review courses, bathrooms, food, colleges, and more. By providing real-time feedback, Rank It helps students make informed choices, from selecting courses to finding the cleanest bathrooms or best food spots.
 
+The backend is built using ExpressJS in the Node.js environment, utilizing JavaScript. Firebase serves as the NoSQL database for real-time data storage, and Supabase is used for image storage. The frontend was developed with React and TypeScript, utilizing Node.js for the development environment and build tools.
+
 ### Features
 - Make a post
 - Rate out of 5.0
